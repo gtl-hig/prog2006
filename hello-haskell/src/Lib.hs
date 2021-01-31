@@ -7,7 +7,7 @@ module Lib
   -- We need that for manipulating Buffering of stdout
   import System.IO(hSetBuffering, BufferMode(NoBuffering), stdout)
   -- We need to import our pure functions here
-  import Tasks
+  import Tasks ( doubleNum )
 
   -- | helloWorld prints Hello World to the screen
   --
@@ -31,4 +31,4 @@ module Lib
     -- hFlush stdout
     numberLine <- getLine
     putStr "The number doubled is: "
-    putStrLn $ show . doubleNum $ read . head . words $ numberLine
+    print . doubleNum . read . head . words $ numberLine

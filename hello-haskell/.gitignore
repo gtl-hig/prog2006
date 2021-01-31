@@ -1,5 +1,6 @@
 .idea
-.stack-work/
+.stack-work
+.vscode
 .DS_Store
 hello-haskell.txt
 *~
