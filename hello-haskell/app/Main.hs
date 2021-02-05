@@ -7,7 +7,7 @@ module Main(main) where
 -- exported, they can be inlined by the compiler.
 
 -- We have to import our Lib module to get access to the functions defined there
-import Lib
+import Lib ( askForNumberAndDoubleIt, helloWorld )
 
 -- | Entry point. Try to keep it simple.
 -- Try to isolate IO code into its own dedicated module.

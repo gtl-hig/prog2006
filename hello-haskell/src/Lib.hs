@@ -9,12 +9,12 @@ module Lib
   -- We need to import our pure functions here
   import Tasks ( doubleNum )
 
-  -- | helloWorld prints Hello World to the screen
+  -- | helloWorld prints Hello World to the screen.
   --
-  -- Example:
-  --
+  -- Examples
+  -- 
   -- >>> helloWorld
-  -- Hello World
+  -- "Hello World"
   --
   helloWorld :: IO ()
   helloWorld = putStrLn "Hello World"
