@@ -10,17 +10,19 @@ import Lib
 testLectureThree :: Spec
 testLectureThree =
     describe "Various tests for Lecture Three" $ do
-      describe "swap3, for swapping first and third list element " $ do
+      describe "swap3" $ do
         it "works for [1, 2, 3]" $ do
             swap3 [1, 2, 3] `shouldBe` [3, 2, 1]
         it "handles edge case with [1,2]" $ do
             swap3 [1, 2] `shouldBe` []
-            
-      describe "replace" $ do
+
+      describe "replace " $ do
         it "works for 'IIIII' 'V' 'IIIIII' -- 'VI' " $ do
             replace "IIIII" "V" "IIIIII" `shouldBe` "VI"
-            
-            
+        it "works for edge case with old == new " $ do
+            replace "old" "old" "Text with old and new" == "Text with old and new"
+
+
       describe "think of a number" $ do
         it "works as expected and always guesses 2!" $
             property $ \x -> think x == 2
@@ -28,8 +30,8 @@ testLectureThree =
 
 
 main :: IO ()
-main = do 
+main = do
   -- Let us run first all the doctests from our source files
   doctest ["-isrc", "app/Main.hs"]
-  hspec $ do 
+  hspec $ do
     testLectureThree

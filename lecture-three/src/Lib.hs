@@ -36,12 +36,14 @@ think x
 --
 replace :: String -> String -> String -> String
 replace _ _ [] = []
-replace old new text =
-  if take size text == old
-    then new ++ replace old new (drop size text)
-    else head text : replace old new (tail text)
-  where
-    size = length old
+replace old new text 
+    | length old > length text = text
+    | otherwise = 
+        if take size text == old
+            then new ++ replace old new (drop size text)
+            else head text : replace old new (tail text)
+        where
+            size = length old
 
 
 
