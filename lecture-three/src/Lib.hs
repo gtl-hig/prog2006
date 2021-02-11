@@ -8,7 +8,6 @@ module Lib
 
 
 
-
 -- | Think of a number game....
 -- think :: (Integral a) => a -> a
 --
@@ -18,7 +17,7 @@ module Lib
 -- >>> think 42
 -- 2
 --
-think :: Int -> Int
+think :: (Integral a) => a -> a
 think x 
     | x < 1 = 2 -- we need to handle the edge case!
     | otherwise = ((((x + 1)^2) - 1) `div` x ) - x
