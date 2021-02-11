@@ -10,28 +10,29 @@ import Text.Read
 -- | Converts an input string into a integer value
 -- Handles errors through the use of Maybe Int
 --
--- >>> conv ""
+-- >>> convString2Maybe ""
 -- Nothing
 --
--- >>> conv "dummy string"
+-- >>> convString2Maybe "dummy string"
 -- Nothing
 --  
--- >>> conv "31"
+-- >>> convString2Maybe "31"
 -- Just 31
 --
-conv :: String -> Maybe Int
-conv "" = Nothing
-conv x = readMaybe x :: Maybe Int
+convString2Maybe :: String -> Maybe Int
+convString2Maybe "" = Nothing
+convString2Maybe x = readMaybe x :: Maybe Int
+
 
 -- | Extracts the Int out of Maybe.
 -- Note, you should use Maybe Int throughout your processing,
 -- as it will simplify composition of your functions. Dealing with
--- Ints is "risky" as there might be error situations, so dealing with 
--- Maybe Ints is usually preferred. Extracting "int" value out of Nothing
--- should never happen, this is why we model it here as Runtime Error.
-ex :: Maybe Int -> Int
-ex Nothing = undefined
-ex (Just num) = num
+-- Ints through Maybe Ints makes handling error situations super NICE.
+-- Extracting "int" value out of Nothing should never happen, 
+-- this is why we model it here as Runtime Error.
+extractIntOutOfMaybe :: Maybe Int -> Int
+extractIntOutOfMaybe Nothing = undefined
+extractIntOutOfMaybe (Just num) = num
 
 
 -- | Main processing function for our input text, into our output text.
@@ -40,8 +41,8 @@ ex (Just num) = num
 processAll :: String -> String
 processAll text = show filteredListOfInts where
         listOfWords = words text
-        listOfInts = map conv listOfWords
-        filteredListOfInts = map ex $ 
+        listOfInts = map convString2Maybe listOfWords
+        filteredListOfInts = map extractIntOutOfMaybe $ 
             filter (\case 
                       Nothing -> False
                       Just _ -> True)
