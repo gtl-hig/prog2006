@@ -17,7 +17,7 @@ module Lib
 -- >>> think 42
 -- 2
 --
-think :: (Integral a) => a -> a
+think :: Int -> Int
 think x 
     | x < 1 = 2 -- we need to handle the edge case!
     | otherwise = ((((x + 1)^2) - 1) `div` x ) - x
