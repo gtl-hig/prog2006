@@ -6,6 +6,7 @@ convString2Maybe,
 extractIntOutOfMaybe,
 filterInts,
 calculate,
+eval,
 showStack
 ) where
 
@@ -43,16 +44,21 @@ eval s stack
 -- | Process a list of words (operations or numbers) in the context of a given starting Stack,
 -- and return the resulting Stack.
 --
--- >>> calculate ["3","2","+"] []
+-- >>> calculate ["3","2","+"]
 -- [5]
 --
--- >>> calculate ["3","*"] [10]
+-- >>> calculate ["10", "3","*"]
 -- [30]
 --
-calculate :: [String] -> Stack -> Stack
+calculate :: [String] -> Stack
+calculate = foldl (flip eval) []
+
+{-- different way of implementing calculate with recursion:
+
 calculate [] stack = stack
 calculate (x:xs) stack = calculate xs firstProcessed where
     firstProcessed = eval x stack
+ --}
 
 -- | Converts an input string into a integer value
 -- Handles errors through the use of Maybe Int

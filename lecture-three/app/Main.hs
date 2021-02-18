@@ -8,7 +8,7 @@ import Math
 -- Input: text from the standard input (finished with CTRL-D).
 -- Output: list of ints, without errors (errors handled through Maybe Int)
 processAll :: String -> String
-processAll text = showStack $ calculate (words text) []
+processAll text = showStack $ calculate (words text)
 
 -- | The main entry point.
 -- Takes the entire input, passes it to processAll function,
