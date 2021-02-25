@@ -7,6 +7,7 @@
     testing frameworks: `HUnit`, `QuickCheck`, `doctest` and finally
     the (Behaviour Driven Development) BDD-inspired testing framework `Hspec`.
 * `hello-chuck` - simple re-implementation of Chuck jokes in Haskell, same as in Go lecture.
+* `lecture-three` - simple arithmethic calculator
 * `students` - applicative error validation 
 * `students-go` - same as `students` but this time in Go
 * `zmq-demo` - simple Publish-Subscribe skeleton app using zmq in Haskell
