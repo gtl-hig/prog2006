@@ -11,7 +11,6 @@ import GHC.Generics
 import Network.HTTP.Simple
 
 
-
 -- Constant for the API
 chuckAPI :: Request
 chuckAPI = "http://api.chucknorris.io/jokes/random"
@@ -28,16 +27,16 @@ data Joke = Joke {
 instance FromJSON Joke
 instance ToJSON Joke
 
--- | Main HTTP API fetching logic. 
+-- | Main HTTP API fetching logic.
 -- http-conduit offers a high-level API that does JSON parsing "by default"
--- and returns @IO <type>@ that has been parsed. We fetch the response, 
--- parse it, extract value (the content of the joke) and return it as IO String.  
+-- and returns @IO <type>@ that has been parsed. We fetch the response,
+-- parse it, extract value (the content of the joke) and return it as IO String.
 getNextJoke :: IO String
 getNextJoke = value . getResponseBody <$> httpJSON chuckAPI
-{-- 
+{--
 Same code as above, but written with do-notation
 
     do
         response <- httpJSON chuckAPI
-        return $ value $ getResponseBody response  
+        return $ value $ getResponseBody response
 --}
