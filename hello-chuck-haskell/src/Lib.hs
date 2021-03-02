@@ -38,5 +38,5 @@ Same code as above, but written with do-notation
 
     do
         response <- httpJSON chuckAPI
-        return $ value $ getResponseBody response
+        return . value . getResponseBody $ response
 --}
