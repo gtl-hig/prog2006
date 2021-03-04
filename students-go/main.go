@@ -52,7 +52,7 @@ func OnlyLetters(s string) bool {
 
 func validateName(newName string) []error {
 	errs := make([]error, 0)
-	if strings.ToUpper(newName[:0]) != newName[:0] {
+	if strings.ToUpper(newName[:1]) != newName[:1] {
 		errs = append(errs, errors.New("Name must have first character Capitalized"))
 	}
 	if len(newName) < 2 {
@@ -66,11 +66,11 @@ func validateName(newName string) []error {
 
 func validateSurname(newName string) []error {
 	errs := make([]error, 0)
-	if strings.ToUpper(newName[:0]) != newName[:0] {
+	if strings.ToUpper(newName[:1]) != newName[:1] {
 		errs = append(errs, errors.New("Surname must have first character Capitalized"))
 	}
-	if len(newName) < 2 {
-		errs = append(errs, errors.New("Surname must be at least 2 characters long"))
+	if len(newName) < 4 {
+		errs = append(errs, errors.New("Surname must be at least 4 characters long"))
 	}
 	if !OnlyLetters(newName) {
 		errs = append(errs, errors.New("Surname can only have letters"))
@@ -134,7 +134,7 @@ func createStudent(words []string) (*Student, []error) {
 		errs = append(errs, err...)
 	}
 	age, errA := validateAge(words[2])
-	if err != nil {
+	if errA != nil {
 		errs = append(errs, errA)
 	}
 	if len(errs) == 0 {
