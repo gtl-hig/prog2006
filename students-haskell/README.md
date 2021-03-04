@@ -1,5 +1,18 @@
 # `students` example
 
+
+## Data validation
+
+* Name
+   * must be a single string that starts with capital letter
+   * can contain only letters ['a'..'Z']
+   * must contain at least 2 characters
+* Surname
+   * same as Name, BUT, must be at least 4 characters
+* Age
+   * must be a natural number, between 18 and 130
+
+
 # Objectives
 
 * a simple demo for error handling
@@ -25,17 +38,6 @@
   * can recover? who? how?
   * cannot recover
 
-
-## Student
-
-* Name
-    * must be a single string that starts with capital letter
-    * can contain only letters ['a'..'Z']
-    * must contain at least 2 characters
-* Surname
-    * same as Name, BUT, must be at least 4 characters
-* Age
-    * must be a natural number, between 18 and 130
 
 
 
