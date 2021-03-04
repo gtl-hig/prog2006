@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 type Student struct {
@@ -40,24 +41,49 @@ func (db *MemDB) AddStudent(s Student) {
 	db.data = append(db.data, s)
 }
 
-func validateName(newName string) error {
-	if strings.ToUpper(newName[:0]) != newName[:0] || len(newName) < 2 {
-		// here ADD 3-4 line for a FOR loop
-		return errors.New("invalid Name: must be at least 2 characters and first Cap")
+func OnlyLetters(s string) bool {
+	for _, r := range s {
+		if !unicode.IsLetter(r) {
+			return false
+		}
 	}
-	return nil
+	return true
 }
 
-func validateSurname(newName string) error {
-	if strings.ToUpper(newName[:0]) != newName[:0] || len(newName) < 4 {
-		return errors.New("invalid Surname: must be at least 4 characters and first Cap")
+func validateName(newName string) []error {
+	errs := make([]error, 0)
+	if strings.ToUpper(newName[:0]) != newName[:0] {
+		errs = append(errs, errors.New("Name must have first character Capitalized"))
 	}
-	return nil
+	if len(newName) < 2 {
+		errs = append(errs, errors.New("Name must be at least 2 characters long"))
+	}
+	if !OnlyLetters(newName) {
+		errs = append(errs, errors.New("Name can only have letters"))
+	}
+	return errs
+}
+
+func validateSurname(newName string) []error {
+	errs := make([]error, 0)
+	if strings.ToUpper(newName[:0]) != newName[:0] {
+		errs = append(errs, errors.New("Surname must have first character Capitalized"))
+	}
+	if len(newName) < 2 {
+		errs = append(errs, errors.New("Surname must be at least 2 characters long"))
+	}
+	if !OnlyLetters(newName) {
+		errs = append(errs, errors.New("Surname can only have letters"))
+	}
+
+	return errs
 }
 
 func validateAge(newAgeS string) (int, error) {
 	newAge, err := strconv.Atoi(newAgeS)
-	if err != nil { return -1, err }
+	if err != nil {
+		return -1, err
+	}
 	if newAge < 18 || newAge > 130 {
 		return -1, errors.New("Age should be between 18 and 130")
 	}
@@ -71,10 +97,11 @@ func execCmd(db StudentDB) {
 		cmd := scanner.Text()
 		words := strings.Split(cmd, " ")
 		switch words[0] {
-		case "": break
+		case "":
+			break
 		case "new":
 			stud, err := createStudent(words[1:])
-			if err != nil {
+			if len(err) != 0 {
 				fmt.Println(err)
 			} else {
 				db.AddStudent(*stud)
@@ -91,25 +118,31 @@ func execCmd(db StudentDB) {
 	}
 }
 
-func createStudent(words []string) (*Student, error) {
+func createStudent(words []string) (*Student, []error) {
+	errs := make([]error, 0)
+
 	if len(words) != 3 {
-		return &Student{}, errors.New("should provide 3 arguments: Name Surname Age")
+		errs = append(errs, errors.New("should provide 3 arguments: Name Surname Age"))
+		return &Student{}, errs
 	}
 	err := validateName(words[0])
 	if err != nil {
-		return &Student{}, err
+		errs = append(errs, err...)
 	}
 	err = validateSurname(words[1])
 	if err != nil {
-		return &Student{}, err
+		errs = append(errs, err...)
 	}
-	age, err := validateAge(words[2])
+	age, errA := validateAge(words[2])
 	if err != nil {
-		return &Student{}, err
+		errs = append(errs, errA)
 	}
-	return &Student{words[0], words[1], age}, nil
-}
+	if len(errs) == 0 {
+		return &Student{words[0], words[1], age}, nil
+	}
 
+	return &Student{words[0], words[1], age}, errs
+}
 
 func main() {
 	db := new(MemDB)
