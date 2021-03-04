@@ -4,6 +4,8 @@ enum StudentError {
     NotAlphabetical,
     TooShort,
     AgeOutOfRange,
+    AgeNotANumber,
+    MissingField,
 }
 
 #[derive(Debug)]
@@ -83,6 +85,20 @@ fn is_valid_age(age: i32) -> Result<(), StudentError> {
     }
 }
 
+// TODO: Simplefy this
+fn parse_student_info<'a>(
+    mut words: impl Iterator<Item = &'a str>,
+) -> Result<Student, StudentError> {
+    let name = words.next().ok_or(StudentError::MissingField)?;
+    let surname = words.next().ok_or(StudentError::MissingField)?;
+    let age = words
+        .next()
+        .ok_or(StudentError::MissingField)
+        .and_then(|s| Ok(s.parse::<i32>().map_err(|_| StudentError::AgeNotANumber)?))?;
+
+    Student::new(name, surname, age)
+}
+
 fn exec_commands(db: &mut StudentDB) {
     let mut input = String::new();
     let stdin = std::io::stdin();
@@ -92,16 +108,16 @@ fn exec_commands(db: &mut StudentDB) {
             .read_line(&mut input)
             .expect("Failed to read input from stdin");
 
-        let mut words = input.split(' ');
-        let command = words.next().map(str::trim).unwrap_or("end");
+        let mut words = input.split_whitespace();
+        let command = words.next().unwrap_or_default();
 
         match command {
             "new" => {
-                let name = words.next().unwrap();
-                let surname = words.next().unwrap();
-                let age = words.next().unwrap().trim();
-                let student = Student::new(name, surname, age.parse().unwrap()).unwrap();
-                db.add_student(student);
+                let student = parse_student_info(words);
+                match student {
+                    Ok(student) => db.add_student(student),
+                    Err(err) => println!("Error occured while creating new student: {:?}", err),
+                };
             }
             "list" => {
                 let students = db.students();
