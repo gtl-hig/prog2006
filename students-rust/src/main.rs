@@ -1,8 +1,8 @@
 #[derive(Debug)]
 enum StudentError {
-    NotCapitalized,
-    NotAlphabetical,
-    TooShort,
+    NameNotCapitalized,
+    NameNotAlphabetical,
+    NameTooShort,
     AgeOutOfRange,
     AgeNotANumber,
     MissingField,
@@ -55,11 +55,11 @@ fn is_only_letters(s: &str) -> bool {
 
 fn is_valid_name(name: &str) -> Result<(), StudentError> {
     if name[0..1] != name[0..1].to_uppercase() {
-        Err(StudentError::NotCapitalized)
+        Err(StudentError::NameNotCapitalized)
     } else if name.len() < 2 {
-        Err(StudentError::TooShort)
+        Err(StudentError::NameTooShort)
     } else if !is_only_letters(name) {
-        Err(StudentError::NotAlphabetical)
+        Err(StudentError::NameNotAlphabetical)
     } else {
         Ok(())
     }
@@ -67,11 +67,11 @@ fn is_valid_name(name: &str) -> Result<(), StudentError> {
 
 fn is_valid_surname(surname: &str) -> Result<(), StudentError> {
     if surname[0..1] != surname[0..1].to_uppercase() {
-        Err(StudentError::NotCapitalized)
+        Err(StudentError::NameNotCapitalized)
     } else if surname.len() < 4 {
-        Err(StudentError::TooShort)
+        Err(StudentError::NameTooShort)
     } else if !is_only_letters(surname) {
-        Err(StudentError::NotAlphabetical)
+        Err(StudentError::NameNotAlphabetical)
     } else {
         Ok(())
     }
@@ -94,7 +94,7 @@ fn parse_student_info<'a>(
     let age = words
         .next()
         .ok_or(StudentError::MissingField)
-        .and_then(|s| Ok(s.parse::<i32>().map_err(|_| StudentError::AgeNotANumber)?))?;
+        .and_then(|s| s.parse::<i32>().map_err(|_| StudentError::AgeNotANumber))?;
 
     Student::new(name, surname, age)
 }
