@@ -25,21 +25,45 @@ type StudentDB = [Student]
 addStudent :: StudentDB -> Student -> StudentDB
 addStudent db stud = stud:db
 
-validateName :: String -> Validation [String] Name 
-validateName [] = Failure ["empty Name"]
-validateName text@(t:_)
-   | length text < 2 = Failure ["invalid Name: must be at least 2 characters"]
-   | not $ isUpper t = Failure ["invalid Name: first letter must be Capitalized"]
-   | not $ all isLetter text = Failure ["invalid Name: only letters allowed"]
+--------------------------
+-- RULES FOR VALIDATION
+--------------------------
+
+stringCannotBeEmpty :: String -> String -> Validation [String] String
+stringCannotBeEmpty prefix [] = Failure [ prefix ++ " cannot be empty"]
+stringCannotBeEmpty _ t = Success t
+
+stringLength :: Int -> String -> String -> Validation [String] String
+stringLength textLength prefix text 
+   | length text < textLength = Failure [ prefix ++ " cannot be shorter than " ++ show textLength]
    | otherwise = Success text
 
+stringFirstCap :: String -> String -> Validation [String] String
+stringFirstCap prefix text@(t:_)
+   | isUpper t = Success text
+   | otherwise = Failure [prefix ++ " must have first letter Capitalized"]
+
+stringOnlyLetters :: String -> String -> Validation [String] String
+stringOnlyLetters prefix text
+   | all isLetter text = Success text
+   | otherwise = Failure [prefix ++ " should contain ONLY letters"]
+
+-----------------------------
+
+validateName :: Name -> Validation [String] Name 
+validateName text = case sequenceA $ [stringCannotBeEmpty, stringOnlyLetters, stringFirstCap, (stringLength 2)] 
+                       <*> ["Name"]
+                       <*> pure text of
+                           Success side -> Success $ head side
+                           Failure f -> Failure f
+
+
 validateSurname :: String -> Validation [String] Surname
-validateSurname [] = Failure ["empty Surname"]
-validateSurname text@(t:_) 
-   | length text < 4 = Failure ["invalid Surname: must be at least 4 characters"]
-   | not $ isUpper t = Failure ["invalid Surname: first letter must be Capitalized"]
-   | not $ all isLetter text = Failure ["invalid Surname: only letters allowed"]
-   | otherwise = Success text
+validateSurname text = case sequenceA $ [stringCannotBeEmpty, stringOnlyLetters, stringFirstCap, (stringLength 4)] 
+                       <*> ["Surname"]
+                       <*> pure text of
+                           Success side -> Success $ head side
+                           Failure f -> Failure f
 
 validateAge :: String -> Validation [String] Age
 validateAge [] = Failure ["empty Age"]
