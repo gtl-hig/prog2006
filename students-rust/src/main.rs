@@ -1,8 +1,9 @@
 #[derive(Debug)]
 enum StudentError {
-    InvalidName,
-    InvalidSurname,
-    InvalidAge,
+    NotCapitalized,
+    NotAlphabetical,
+    TooShort,
+    AgeOutOfRange,
 }
 
 #[derive(Debug)]
@@ -52,11 +53,11 @@ fn is_only_letters(s: &str) -> bool {
 
 fn is_valid_name(name: &str) -> Result<(), StudentError> {
     if name[0..1] != name[0..1].to_uppercase() {
-        Err(StudentError::InvalidName)
+        Err(StudentError::NotCapitalized)
     } else if name.len() < 2 {
-        Err(StudentError::InvalidName)
+        Err(StudentError::TooShort)
     } else if !is_only_letters(name) {
-        Err(StudentError::InvalidName)
+        Err(StudentError::NotAlphabetical)
     } else {
         Ok(())
     }
@@ -64,11 +65,11 @@ fn is_valid_name(name: &str) -> Result<(), StudentError> {
 
 fn is_valid_surname(surname: &str) -> Result<(), StudentError> {
     if surname[0..1] != surname[0..1].to_uppercase() {
-        Err(StudentError::InvalidSurname)
+        Err(StudentError::NotCapitalized)
     } else if surname.len() < 4 {
-        Err(StudentError::InvalidSurname)
+        Err(StudentError::TooShort)
     } else if !is_only_letters(surname) {
-        Err(StudentError::InvalidSurname)
+        Err(StudentError::NotAlphabetical)
     } else {
         Ok(())
     }
@@ -76,7 +77,7 @@ fn is_valid_surname(surname: &str) -> Result<(), StudentError> {
 
 fn is_valid_age(age: i32) -> Result<(), StudentError> {
     if age < 18 || age > 130 {
-        Err(StudentError::InvalidAge)
+        Err(StudentError::AgeOutOfRange)
     } else {
         Ok(())
     }
