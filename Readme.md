@@ -12,3 +12,4 @@
 * `students-go` - same as `students` but this time in Go
 * `zmq-demo` - simple Publish-Subscribe skeleton app using zmq in Haskell
 * `zmq-go` - same as `zmq-demo`, but this time in Go
+* `rust` - All rust examples and code
