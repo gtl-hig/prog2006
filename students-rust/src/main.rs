@@ -1,8 +1,8 @@
 #[derive(Debug)]
 enum StudentError {
-    NameNotCapitalized,
-    NameNotAlphabetical,
-    NameTooShort,
+    NotCapitalized(String),
+    NotAlphabetical(String),
+    TooShort(String),
     AgeOutOfRange,
     AgeNotANumber,
     MissingField,
@@ -55,11 +55,11 @@ fn is_only_letters(s: &str) -> bool {
 
 fn is_valid_name(name: &str) -> Result<(), StudentError> {
     if name[0..1] != name[0..1].to_uppercase() {
-        Err(StudentError::NameNotCapitalized)
+        Err(StudentError::NotCapitalized("Name".to_string()))
     } else if name.len() < 2 {
-        Err(StudentError::NameTooShort)
+        Err(StudentError::TooShort("Name".to_string()))
     } else if !is_only_letters(name) {
-        Err(StudentError::NameNotAlphabetical)
+        Err(StudentError::NotAlphabetical("Name".to_string()))
     } else {
         Ok(())
     }
@@ -67,11 +67,11 @@ fn is_valid_name(name: &str) -> Result<(), StudentError> {
 
 fn is_valid_surname(surname: &str) -> Result<(), StudentError> {
     if surname[0..1] != surname[0..1].to_uppercase() {
-        Err(StudentError::NameNotCapitalized)
+        Err(StudentError::NotCapitalized("Surname".to_string()))
     } else if surname.len() < 4 {
-        Err(StudentError::NameTooShort)
+        Err(StudentError::TooShort("Surname".to_string()))
     } else if !is_only_letters(surname) {
-        Err(StudentError::NameNotAlphabetical)
+        Err(StudentError::NotAlphabetical("Surname".to_string()))
     } else {
         Ok(())
     }
