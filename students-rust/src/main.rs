@@ -100,10 +100,10 @@ fn parse_student_info<'a>(
 }
 
 fn exec_commands(db: &mut StudentDB) {
-    let mut input = String::new();
     let stdin = std::io::stdin();
 
     loop {
+        let mut input = String::new();
         stdin
             .read_line(&mut input)
             .expect("Failed to read input from stdin");
@@ -112,6 +112,7 @@ fn exec_commands(db: &mut StudentDB) {
         let command = words.next().unwrap_or_default();
 
         match command {
+            "" => continue,
             "new" => {
                 let student = parse_student_info(words);
                 match student {
@@ -124,7 +125,10 @@ fn exec_commands(db: &mut StudentDB) {
                 println!("Students: {:#?}", students);
             }
             "end" => break,
-            _ => break,
+            _ => {
+                println!("Unknown command");
+                continue
+            },
         }
         input.clear();
     }
