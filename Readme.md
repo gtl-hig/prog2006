@@ -6,10 +6,17 @@
     The project is a demo project for `stack` and demonstrates the use of
     testing frameworks: `HUnit`, `QuickCheck`, `doctest` and finally
     the (Behaviour Driven Development) BDD-inspired testing framework `Hspec`.
-* `hello-chuck` - simple re-implementation of Chuck jokes in Haskell, same as in Go lecture.
-* `lecture-three` - simple arithmethic calculator
-* `students` - applicative error validation 
-* `students-go` - same as `students` but this time in Go
+* `hello-chuck` - simple demo for JSON parsing and http GET request
+   * `hello-chuck-haskell` - implementation of Chuck jokes in Haskell
+   * `hello-chuck-go` - Go
+   * `hello-chuck-rust` - Rust
+* `lecture-three` - simple arithmethic calculator, code for [the online lecture](https://www.youtube.com/watch?v=FehRZbQW8Eg)
+* `students` - applicative error validation, error bubbling up and error consolidation
+   * `students-go` - Go implementation
+   * `students-rust`- Rust implementation (courtesy of Dennis)
+   * `students-haskell` - Haskell implementation
+   * `students-gen-rust` - data generator for testing students implementations
 * `zmq-demo` - simple Publish-Subscribe skeleton app using zmq in Haskell
 * `zmq-go` - same as `zmq-demo`, but this time in Go
 * `rust` - All rust examples and code
+   * `ownership` - code for the [ownership lecture](https://www.youtube.com/watch?v=mcCijWFIgaU)
