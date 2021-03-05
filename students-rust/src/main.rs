@@ -15,11 +15,40 @@ struct Student {
     age: i32,
 }
 
+fn pure<E>(e: E) -> Vec<E> {
+    let mut res = Vec::new();
+    res.push(e);
+    res
+}
+
+fn combine_results<A, B, E>(r1: Result<A, Vec<E>>, r2: Result<B, Vec<E>>) -> Result<B, Vec<E>> {
+    match r1 {
+        Ok(_) => {
+            match r2 {
+                Ok(v2) => Ok(v2),
+                Err(e2) => Err(e2),
+            }
+        },
+        Err(e1) => {
+            match r2 {
+                Ok(_) => Err(e1),
+                Err(e2) => {
+                    let mut both = Vec::new();
+                    both.extend(e1);
+                    both.extend(e2);
+                    Err(both)
+                }
+            }
+        }
+    }
+}
+
 impl Student {
-    pub fn new(name: &str, surname: &str, age: i32) -> Result<Self, StudentError> {
-        is_valid_name(name)?;
-        is_valid_surname(surname)?;
-        is_valid_age(age)?;
+    pub fn new(name: &str, surname: &str, age_s: &str) -> Result<Self, Vec<StudentError>> {
+
+        let age = combine_results(combine_results(is_valid_name(name),
+        is_valid_surname(surname)),
+        is_valid_age(age_s))?;
 
         Ok(Self {
             name: name.to_string(),
@@ -49,52 +78,68 @@ impl StudentDB {
     }
 }
 
+
+
+
 fn is_only_letters(s: &str) -> bool {
     s.chars().all(|c| c.is_alphabetic())
 }
 
-fn is_valid_name(name: &str) -> Result<(), StudentError> {
+fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
+    let mut errs = Vec::new();
     if name[0..1] != name[0..1].to_uppercase() {
-        Err(StudentError::NotCapitalized("Name".to_string()))
-    } else if name.len() < 2 {
-        Err(StudentError::TooShort("Name".to_string()))
-    } else if !is_only_letters(name) {
-        Err(StudentError::NotAlphabetical("Name".to_string()))
+        errs.push(StudentError::NotCapitalized("Name".to_string()));
+    }
+    if name.len() < 2 {
+        errs.push(StudentError::TooShort("Name".to_string()));
+    }
+    if !is_only_letters(name) {
+        errs.push(StudentError::NotAlphabetical("Name".to_string()));
+    }
+    if errs.len() > 0 {
+        Err(errs)
     } else {
         Ok(())
     }
 }
 
-fn is_valid_surname(surname: &str) -> Result<(), StudentError> {
+fn is_valid_surname(surname: &str) -> Result<(), Vec<StudentError>> {
+    let mut errs = Vec::new();
     if surname[0..1] != surname[0..1].to_uppercase() {
-        Err(StudentError::NotCapitalized("Surname".to_string()))
-    } else if surname.len() < 4 {
-        Err(StudentError::TooShort("Surname".to_string()))
-    } else if !is_only_letters(surname) {
-        Err(StudentError::NotAlphabetical("Surname".to_string()))
+        errs.push(StudentError::NotCapitalized("Surname".to_string()));
+    }
+    if surname.len() < 4 {
+        errs.push(StudentError::TooShort("Surname".to_string()));
+    }
+    if !is_only_letters(surname) {
+        errs.push(StudentError::NotAlphabetical("Surname".to_string()));
+    }
+
+    if errs.len() > 0 {
+        return Err(errs)
     } else {
         Ok(())
     }
 }
 
-fn is_valid_age(age: i32) -> Result<(), StudentError> {
+fn is_valid_age(age_s: &str) -> Result<i32, Vec<StudentError>> {
+    let age = age_s.parse::<i32>().map_err(|_| pure(StudentError::AgeNotANumber))?;
     if age < 18 || age > 130 {
-        Err(StudentError::AgeOutOfRange)
+        Err(pure(StudentError::AgeOutOfRange))
     } else {
-        Ok(())
+        Ok(age)
     }
 }
 
 // TODO: Simplefy this
 fn parse_student_info<'a>(
     mut words: impl Iterator<Item = &'a str>,
-) -> Result<Student, StudentError> {
-    let name = words.next().ok_or(StudentError::MissingField)?;
-    let surname = words.next().ok_or(StudentError::MissingField)?;
+) -> Result<Student, Vec<StudentError>> {
+    let name = words.next().ok_or(pure(StudentError::MissingField))?;
+    let surname = words.next().ok_or(pure(StudentError::MissingField))?;
     let age = words
         .next()
-        .ok_or(StudentError::MissingField)
-        .and_then(|s| s.parse::<i32>().map_err(|_| StudentError::AgeNotANumber))?;
+        .ok_or(pure(StudentError::MissingField))?;
 
     Student::new(name, surname, age)
 }
@@ -117,7 +162,7 @@ fn exec_commands(db: &mut StudentDB) {
                 let student = parse_student_info(words);
                 match student {
                     Ok(student) => db.add_student(student),
-                    Err(err) => println!("Error occured while creating new student: {:?}", err),
+                    Err(err) => println!("Errors: {:?}", err),
                 };
             }
             "list" => {
