@@ -17,7 +17,15 @@ type Age = Int
 data Student = Student {  name    :: Name
                         , surname :: Surname
                         , age     :: Age
-                        } deriving (Eq, Show)
+                        } deriving (Eq)
+
+instance Show Student where 
+  show s = "{" ++
+           name s ++ " " ++
+           surname s ++ " " ++ 
+           show (age s) ++
+           "}" 
+
 
 type StudentDB = [Student]
 
@@ -35,18 +43,18 @@ stringCannotBeEmpty _ t = Success t
 
 stringLength :: Int -> String -> String -> Validation [String] String
 stringLength textLength prefix text 
-   | length text < textLength = Failure [ prefix ++ " cannot be shorter than " ++ show textLength]
+   | length text < textLength = Failure [ prefix ++ " too short"]
    | otherwise = Success text
 
 stringFirstCap :: String -> String -> Validation [String] String
 stringFirstCap prefix text@(t:_)
    | isUpper t = Success text
-   | otherwise = Failure [prefix ++ " must have first letter Capitalized"]
+   | otherwise = Failure [prefix ++ " must be Capitalized"]
 
 stringOnlyLetters :: String -> String -> Validation [String] String
 stringOnlyLetters prefix text
    | all isLetter text = Success text
-   | otherwise = Failure [prefix ++ " should contain ONLY letters"]
+   | otherwise = Failure [prefix ++ " only letters allowed"]
 
 -----------------------------
 
@@ -65,11 +73,34 @@ validateSurname text = case sequenceA $ [stringCannotBeEmpty, stringOnlyLetters,
                            Success side -> Success $ head side
                            Failure f -> Failure f
 
+{--
+
+Alternative - imperative style:
+
+validateName :: Name -> Validation [String] Name
+validateName text = do
+  let errs = []
+  let errs2 = if length(text) < 2 then errs ++ ["Name too short"] else errs 
+  let errs3 = if not . isUpper $ head text then errs2 ++ ["Name must be Capitalized"] else errs2
+  let errs4 = if not $ all isLetter text then errs3 ++ ["Name: Only letters allowed"] else errs3
+  if length(errs4) > 0 then Failure errs4 else Success text
+
+validateSurname :: String -> Validation [String] Surname
+validateSurname text = do
+  let errs = []
+  let errs2 = if length(text) < 4 then errs ++ ["Surname too short"] else errs 
+  let errs3 = if not . isUpper $ head text then errs2 ++ ["Surname must be Capitalized"] else errs2
+  let errs4 = if not $ all isLetter text then errs3 ++ ["Surname: Only letters allowed"] else errs3
+  if length(errs4) > 0 then Failure errs4 else Success text
+
+-}
+
+
 validateAge :: String -> Validation [String] Age
 validateAge [] = Failure ["empty Age"]
 validateAge ts = case readMaybe ts :: Maybe Int of
     Just num -> if num >= 18 && num <= 130 then 
-      Success num else Failure ["Age must be between 18 and 130"]
+      Success num else Failure ["Age outside range"]
     Nothing -> Failure ["error parsing Age"]
 
 
