@@ -19,6 +19,7 @@ def validateName(prefix, name):
         errors.append(prefix + " must be Capitalized")
     return errors
 
+
 def validateAge(ageS):
     errors = []
     try:
@@ -29,6 +30,7 @@ def validateAge(ageS):
     if age < 18 or age > 130:
         errors.append("Age outside the range")
     return age, errors
+
 
 def newStudent(words):
     errors = []
@@ -42,18 +44,20 @@ def newStudent(words):
 
     age, ageErrors = validateAge(words[2])
     errors.extend(ageErrors)
-    
+
     return Student(name=name, surname=surname, age=age), errors
+
 
 def printStudents(studs):
     for s in studs:
         print(s)
 
+
 def processor():
     while True:
         line = sys.stdin.readline()
         words = line.split()
-        if len(words) == 0: 
+        if len(words) == 0:
             continue
         elif 'end' == words[0]:
             break
