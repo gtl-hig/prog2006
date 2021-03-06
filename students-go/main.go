@@ -53,13 +53,13 @@ func OnlyLetters(s string) bool {
 func validateName(newName string) []error {
 	errs := make([]error, 0)
 	if strings.ToUpper(newName[:1]) != newName[:1] {
-		errs = append(errs, errors.New("Name must have first character Capitalized"))
+		errs = append(errs, errors.New("Name must be Capitalized"))
 	}
 	if len(newName) < 2 {
-		errs = append(errs, errors.New("Name must be at least 2 characters long"))
+		errs = append(errs, errors.New("Name too short"))
 	}
 	if !OnlyLetters(newName) {
-		errs = append(errs, errors.New("Name can only have letters"))
+		errs = append(errs, errors.New("Name only letters allowed"))
 	}
 	return errs
 }
@@ -67,13 +67,13 @@ func validateName(newName string) []error {
 func validateSurname(newName string) []error {
 	errs := make([]error, 0)
 	if strings.ToUpper(newName[:1]) != newName[:1] {
-		errs = append(errs, errors.New("Surname must have first character Capitalized"))
+		errs = append(errs, errors.New("Surname must be Capitalized"))
 	}
 	if len(newName) < 4 {
-		errs = append(errs, errors.New("Surname must be at least 4 characters long"))
+		errs = append(errs, errors.New("Surname too short"))
 	}
 	if !OnlyLetters(newName) {
-		errs = append(errs, errors.New("Surname can only have letters"))
+		errs = append(errs, errors.New("Surname only letters allowed"))
 	}
 
 	return errs
@@ -85,7 +85,7 @@ func validateAge(newAgeS string) (int, error) {
 		return -1, err
 	}
 	if newAge < 18 || newAge > 130 {
-		return -1, errors.New("Age should be between 18 and 130")
+		return -1, errors.New("Age outside the range")
 	}
 	return newAge, nil
 }
