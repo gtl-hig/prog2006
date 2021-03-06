@@ -1,7 +1,9 @@
+use std::fmt::{Display, Formatter};
+
 #[derive(Debug)]
 enum StudentError {
-    NotCapitalized(String),
-    NotAlphabetical(String),
+    MustBeCapitalized(String),
+    OnlyLettersAllowed(String),
     TooShort(String),
     AgeOutOfRange,
     AgeNotANumber,
@@ -14,6 +16,41 @@ struct Student {
     surname: String,
     age: i32,
 }
+
+impl Display for Student {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Student {{{} {} {}}}", self.name, self.surname, self.age)
+    }
+}
+
+#[derive(Debug)]
+struct Slice<'a, T> {
+    data: &'a[T]
+}
+
+impl <T: Display> Display for Slice<'_, T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for s in self.data {
+            write!(f, "{}\n", s)?;
+        }
+        Ok(())
+    }
+}
+
+/*
+Note We cannot do that:
+
+// CANNOT do that
+impl Display for &[Student] {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        for s in self {
+            write!(f, "{}\n", s)?;
+        };
+        Ok(())
+    }
+}
+*/
+
 
 fn pure<E>(e: E) -> Vec<E> {
     let mut res = Vec::new();
@@ -88,13 +125,13 @@ fn is_only_letters(s: &str) -> bool {
 fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
     let mut errs = Vec::new();
     if name[0..1] != name[0..1].to_uppercase() {
-        errs.push(StudentError::NotCapitalized("Name".to_string()));
+        errs.push(StudentError::MustBeCapitalized("Name".to_owned()));
     }
     if name.len() < 2 {
-        errs.push(StudentError::TooShort("Name".to_string()));
+        errs.push(StudentError::TooShort("Name".to_owned()));
     }
     if !is_only_letters(name) {
-        errs.push(StudentError::NotAlphabetical("Name".to_string()));
+        errs.push(StudentError::OnlyLettersAllowed("Name".to_owned()));
     }
     if errs.len() > 0 {
         Err(errs)
@@ -106,13 +143,13 @@ fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
 fn is_valid_surname(surname: &str) -> Result<(), Vec<StudentError>> {
     let mut errs = Vec::new();
     if surname[0..1] != surname[0..1].to_uppercase() {
-        errs.push(StudentError::NotCapitalized("Surname".to_string()));
+        errs.push(StudentError::MustBeCapitalized("Surname".to_owned()));
     }
     if surname.len() < 4 {
-        errs.push(StudentError::TooShort("Surname".to_string()));
+        errs.push(StudentError::TooShort("Surname".to_owned()));
     }
     if !is_only_letters(surname) {
-        errs.push(StudentError::NotAlphabetical("Surname".to_string()));
+        errs.push(StudentError::OnlyLettersAllowed("Surname".to_owned()));
     }
 
     if errs.len() > 0 {
@@ -167,7 +204,9 @@ fn exec_commands(db: &mut StudentDB) {
             }
             "list" => {
                 let students = db.students();
-                println!("Students: {:#?}", students);
+                println!("{}", &Slice { data: &students });
+                // println!("{:?}", &Slice { data: &students });
+                // println!("{:#?}", students);
             }
             "end" => break,
             _ => {
