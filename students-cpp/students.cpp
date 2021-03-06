@@ -5,6 +5,7 @@
 #include <iterator>
 #include <valarray>
 #include <ctype.h>
+#include <memory>
 
 /**
  *  Class to hold data for a single student
@@ -22,8 +23,8 @@ class Student{
     }
 };
 
-void executeCommands(std::vector<Student*> &students);
-void printStudents(std::vector<Student*> &students);
+void executeCommands(std::vector<std::shared_ptr<Student>> &students);
+void printStudents(std::vector<std::shared_ptr<Student>> &students);
 const bool isAlphabetic(const std::string &word);
 std::vector<std::string> validateName(const std::string &name);
 std::vector<std::string> validateSurname(const std::string &name);
@@ -35,7 +36,7 @@ const bool checkForErrors(const std::vector<std::string> &cmd);
  *  responds accordingly
  *  @param students std::vector<Student*>&
  */
-void executeCommands(std::vector<Student*> &students){
+void executeCommands(std::vector<std::shared_ptr<Student>> &students){
     while (1) {
         std::string in;  // Declare and read input
         getline (std::cin, in);
@@ -46,7 +47,7 @@ void executeCommands(std::vector<Student*> &students){
         std::vector<std::string> cmd((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
 
         if(cmd[0].compare("new") == 0){
-            if(checkForErrors(cmd)) students.push_back(new Student(cmd[1], cmd[2], std::stoi(cmd[3])));
+            if(checkForErrors(cmd)) students.push_back(std::make_unique<Student>(cmd[1], cmd[2], std::stoi(cmd[3])));
         }
         else if(cmd[0].compare("list") == 0){
             printStudents(students);
@@ -65,8 +66,8 @@ void executeCommands(std::vector<Student*> &students){
  *  command string for errors, returns true if no errors
  *  @param students std::vector<Student*>&
  */
-void printStudents(std::vector<Student*> &students){
-    for (Student* &s : students){
+void printStudents(std::vector<std::shared_ptr<Student>> &students){
+    for (auto &s : students){
         std::cout << s->name << ", " << s->surname << ", " << std::to_string(s->age) << "\n";
     }
 }
@@ -139,7 +140,7 @@ std::vector<std::string> validateAge(const std::string &age){
     try { iage = std::stoi(age); }
     catch (...) { errors.push_back("Age must be a number"); }
 
-    // Check if surname is longer than two letters
+    // Check if age is between 18 and 130
     if (iage < 18 || iage > 130) errors.push_back("Age outside valid range");
 
     return errors;
@@ -179,7 +180,7 @@ const bool checkForErrors(const std::vector<std::string> &cmd){
  *  Program entry point
  */
 int main(){
-    std::vector<Student*> students;
+    std::vector<std::shared_ptr<Student>> students;
 
     executeCommands(students);
     return 0;
