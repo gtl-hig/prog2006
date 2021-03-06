@@ -2,9 +2,9 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
 enum StudentError {
-    MustBeCapitalized(String),
-    OnlyLettersAllowed(String),
-    TooShort(String),
+    MustBeCapitalized(&'static str),
+    OnlyLettersAllowed(&'static str),
+    TooShort(&'static str),
     AgeOutOfRange,
     AgeNotANumber,
     MissingField,
@@ -59,33 +59,30 @@ fn pure<E>(e: E) -> Vec<E> {
 }
 
 fn combine_results<A, B, E>(r1: Result<A, Vec<E>>, r2: Result<B, Vec<E>>) -> Result<B, Vec<E>> {
-    match r1 {
-        Ok(_) => {
-            match r2 {
-                Ok(v2) => Ok(v2),
-                Err(e2) => Err(e2),
-            }
-        },
-        Err(e1) => {
-            match r2 {
-                Ok(_) => Err(e1),
-                Err(e2) => {
-                    let mut both = Vec::new();
-                    both.extend(e1);
-                    both.extend(e2);
-                    Err(both)
-                }
-            }
+    match (r1, r2) {
+        // Everything is ok -> precede
+        (Ok(_), Ok(v2)) => Ok(v2),
+        // Everything is wrong -> merge errors into one vec
+        (Err(e1), Err(e2)) => {
+            let mut both = Vec::new();
+            both.extend(e1);
+            both.extend(e2);
+            Err(both)
         }
+        // Only some things are wronge -> return those
+        (Err(e1), _) => Err(e1),
+        (_, Err(e2)) => Err(e2),
     }
 }
 
 impl Student {
     pub fn new(name: &str, surname: &str, age_s: &str) -> Result<Self, Vec<StudentError>> {
 
-        let age = combine_results(combine_results(is_valid_name(name),
-        is_valid_surname(surname)),
-        is_valid_age(age_s))?;
+        let age = combine_results(
+            combine_results(
+                is_valid_name(name),is_valid_surname(surname)),
+            is_valid_age(age_s)
+        )?;
 
         Ok(Self {
             name: name.to_string(),
@@ -125,13 +122,13 @@ fn is_only_letters(s: &str) -> bool {
 fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
     let mut errs = Vec::new();
     if name[0..1] != name[0..1].to_uppercase() {
-        errs.push(StudentError::MustBeCapitalized("Name".to_owned()));
+        errs.push(StudentError::MustBeCapitalized("Name"));
     }
     if name.len() < 2 {
-        errs.push(StudentError::TooShort("Name".to_owned()));
+        errs.push(StudentError::TooShort("Name"));
     }
     if !is_only_letters(name) {
-        errs.push(StudentError::OnlyLettersAllowed("Name".to_owned()));
+        errs.push(StudentError::OnlyLettersAllowed("Name"));
     }
     if errs.len() > 0 {
         Err(errs)
@@ -143,13 +140,13 @@ fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
 fn is_valid_surname(surname: &str) -> Result<(), Vec<StudentError>> {
     let mut errs = Vec::new();
     if surname[0..1] != surname[0..1].to_uppercase() {
-        errs.push(StudentError::MustBeCapitalized("Surname".to_owned()));
+        errs.push(StudentError::MustBeCapitalized("Surname"));
     }
     if surname.len() < 4 {
-        errs.push(StudentError::TooShort("Surname".to_owned()));
+        errs.push(StudentError::TooShort("Surname"));
     }
     if !is_only_letters(surname) {
-        errs.push(StudentError::OnlyLettersAllowed("Surname".to_owned()));
+        errs.push(StudentError::OnlyLettersAllowed("Surname"));
     }
 
     if errs.len() > 0 {
