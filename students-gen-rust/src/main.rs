@@ -3,9 +3,9 @@ extern crate std;
 
 use anyhow::{Context, Result};
 use clap::{App, Arg};
+use rand::Rng;
 use std::fs::File;
 use std::io::Write;
-use rand::Rng;
 
 // Some arrays of names to produce more combinations of good / bad names
 const OK_FIRST_NAMES: [&str; 5] = ["Xi", "Petter", "Ola", "Vilde", "John"];
@@ -50,11 +50,13 @@ fn main() -> Result<()> {
 
     // Parse arguments with Clap, add error context to help the user if they mess up using anyhow
     let correct: i32 = matches
-        .value_of("correct").unwrap()
+        .value_of("correct")
+        .unwrap()
         .parse()
         .with_context(|| "Correct should be a number")?;
     let incorrect: i32 = matches
-        .value_of("incorrect").unwrap()
+        .value_of("incorrect")
+        .unwrap()
         .parse()
         .with_context(|| "Incorrect should be a number")?;
     let path = matches.value_of("output").unwrap();
@@ -66,7 +68,6 @@ fn main() -> Result<()> {
         incorrect
     );
 
-
     let mut output = File::create(path)?;
     let mut rng = rand::thread_rng();
 
@@ -74,7 +75,13 @@ fn main() -> Result<()> {
     for _ in 0..correct {
         let name: &str = OK_FIRST_NAMES[(rng.gen_range(0..OK_FIRST_NAMES.len()))];
         let surname: &str = OK_SURNAMES[(rng.gen_range(0..OK_SURNAMES.len()))];
-        writeln!(output, "new {} {} {}", name, surname, rng.gen_range(18..=130))?;
+        writeln!(
+            output,
+            "new {} {} {}",
+            name,
+            surname,
+            rng.gen_range(18..=130)
+        )?;
     }
 
     // Generate the BAD students
