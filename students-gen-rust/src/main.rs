@@ -1,6 +1,3 @@
-extern crate clap;
-extern crate std;
-
 use anyhow::{Context, Result};
 use clap::{App, Arg};
 use rand::Rng;
