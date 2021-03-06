@@ -68,7 +68,7 @@ fn main() -> Result<()> {
         incorrect
     );
 
-    let mut output = File::create(path)?;
+    let mut output = File::create(path).with_context(|| "Creating the output file.")?;
     let mut rng = rand::thread_rng();
 
     // Generate the OK students
