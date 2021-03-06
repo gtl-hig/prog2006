@@ -4,8 +4,9 @@ extern crate std;
 use clap::{App, Arg};
 use std::fs::File;
 use std::io::Write;
+use anyhow::Result;
 
-fn main() {
+fn main() -> Result<()> {
     let matches = App::new("Students Data Generator")
         .version("1.0")
         .author("Mariusz fom PROG2006")
@@ -38,7 +39,7 @@ fn main() {
     let mut incorrect: i32 = matches.value_of("incorrect").unwrap().parse().unwrap();
     let path = matches.value_of("output").unwrap();
 
-    println!("Generating {} studens: {} correct - {} incorrect",
+    println!("Generating {} students: {} correct - {} incorrect",
              correct + incorrect, correct, incorrect);
 
     let mut output = File::create(path).unwrap();
@@ -56,4 +57,6 @@ fn main() {
     }
 
     write!(output, "list\nend\n").unwrap();
+
+    Ok(())
 }
