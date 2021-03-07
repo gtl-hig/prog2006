@@ -29,38 +29,38 @@ const newStudent = (input) => {
     age = input[3]
 
     // validate format
-    if (input.length != 4) {
-        console.error("wrong format. Example of a valid format: new Ola Normann 30");
+    if (input.length !== 4) {
+        console.error("Should provide 3 arguments: Name Surname Age");
         return;
     }
 
     // validate firstname
     if (firstname.length < 2) {
-        errorMessages.push("first name needs to be at least 2 characters long")
+        errorMessages.push("Name must be at least 2 characters long")
     }
     if (firstname.charAt(0) !== firstname.charAt(0).toUpperCase()) {
-        errorMessages.push("first name's first character must be capitalized")
+        errorMessages.push("Name must have first character Capitalized")
     }
     if (/[^a-zA-Z]/.test(firstname)) {
-        errorMessages.push("first name can only contains letter")
+        errorMessages.push("Name can only have letters")
     }
 
     // validate surname
     if (surname.length < 4) {
-        errorMessages.push("surname needs to be at least 4 characters long")
+        errorMessages.push("Surname must be at least 4 characters long")
     }
     if (surname.charAt(0) !== surname.charAt(0).toUpperCase()) {
-        errorMessages.push("surname's first character must be capitalized")
+        errorMessages.push("Surname must have first character Capitalized")
     }
     if (/[^a-zA-Z]/.test(firstname)) {
-        errorMessages.push("surname can only contains letter")
+        errorMessages.push("Surname can only have letters")
     }
 
     // validate age
     if (isNaN(age)) {
-        errorMessages.push("age needs to be a number")
-    } else if (age < 0 || 100 < age) {
-        errorMessages.push("age needs to be a number between 0 and 100")
+        errorMessages.push("Age must be a number")
+    } else if (age < 18 || 130 < age) {
+        errorMessages.push("Age outside the range")
     }
 
     if (errorMessages.length > 0) { // if errors
@@ -74,20 +74,15 @@ const newStudent = (input) => {
         console.error(finalMessage);
     } else { // if no errors
         students.addStudent(firstname, surname, age);
-        console.log("student successfully added to database")
     }
 }
 
 // show all students
 const showAllStudents = () => {
     const allStudents = students.getAllStudents();
-    if(allStudents.length < 1) { // if no students in database
-        console.log("no students in database at the moment")
-    } else { // if there is students in database
-        allStudents.forEach((student, idx) => {
-            console.log(`firstname: ${student.firstname}, surname: ${student.surname}, age: ${student.age}`)
-        })
-    }
+    allStudents.forEach((student, idx) => {
+        console.log(`firstname: ${student.firstname}, surname: ${student.surname}, age: ${student.age}`)
+    })
 }
 
 // main
@@ -104,5 +99,4 @@ stdin.addListener("data", (d) => {
     } else {
         console.log("unknown command")
     }
-
 });
