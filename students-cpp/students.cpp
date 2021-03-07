@@ -2,10 +2,8 @@
 #include <cctype>
 #include <iostream>
 #include <iterator>
-#include <memory>
 #include <sstream>
 #include <string>
-#include <valarray>
 #include <vector>
 
 /**
