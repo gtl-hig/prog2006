@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cctype>
 #include <iostream>
 #include <iterator>
@@ -19,7 +20,7 @@ struct Student
 
 void executeCommands(std::vector<Student>& students);
 void printStudents(const std::vector<Student>& students);
-bool isAlphabetic(const std::string& word);
+bool isEntirelyAlphabetic(const std::string& word);
 void validateName(const std::string& name, std::vector<std::string>& errors);
 void validateSurname(const std::string& name, std::vector<std::string>& errors);
 void validateAge(const std::string& name, std::vector<std::string>& errors);
@@ -82,20 +83,12 @@ void printStudents(const std::vector<Student>& students)
 
 /**
  *  Checks that the given word consists only of alphabetical characters
- *  @param word std::string&
+ *  @param word
  *  @return bool
  */
-bool isAlphabetic(const std::string& word)
+bool isEntirelyAlphabetic(const std::string& word)
 {
-    bool alpha = true;
-    for (auto& c : word)
-    {
-        if (!isalpha(c))
-        {
-            alpha = false;
-        }
-    }
-    return alpha;
+    return std::all_of(word.cbegin(), word.cend(), [](auto&& letter) { return isalpha(letter); });
 }
 
 /**
