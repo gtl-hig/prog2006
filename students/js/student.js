@@ -58,9 +58,9 @@ const newStudent = (input) => {
 
     // validate age
     if (isNaN(age)) {
-        errorMessages.push("age needs to be a number")
-    } else if (age < 0 || 100 < age) {
-        errorMessages.push("age needs to be a number between 0 and 100")
+        errorMessages.push("Age must be a number")
+    } else if (age < 18 || 130 < age) {
+        errorMessages.push("Age outside the range")
     }
 
     if (errorMessages.length > 0) { // if errors
