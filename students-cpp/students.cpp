@@ -43,8 +43,8 @@ void executeCommands(std::vector<Student>& students)
             continue;
         }
 
-        std::istringstream iss{in};
-        auto cmd = std::vector<std::string>(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+        auto iss = std::istringstream{in};
+        auto cmd = std::vector<std::string>(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{});
 
         if (cmd[0] == "new")
         {
@@ -153,22 +153,21 @@ void validateSurname(const std::string& surname, std::vector<std::string>& error
  */
 void validateAge(const std::string& age, std::vector<std::string>& errors)
 {
-    int iage;
+    constexpr auto MIN_AGE = 18;
+    constexpr auto MAX_AGE = 130;
 
     // Check if parsing to int is possible
     try
     {
-        iage = std::stoi(age);
+        const auto iage = std::stoi(age);
+        if (iage < MIN_AGE || iage > MAX_AGE)
+        {
+            errors.emplace_back("Age outside valid range");
+        }
     }
     catch (...)
     {
-        errors.push_back("Age must be a number");
-    }
-
-    // Check if age is between 18 and 130
-    if (iage < 18 || iage > 130)
-    {
-        errors.push_back("Age outside valid range");
+        errors.emplace_back("Age must be a number");
     }
 }
 
