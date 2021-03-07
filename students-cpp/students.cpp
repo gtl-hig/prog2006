@@ -1,59 +1,67 @@
+#include <cctype>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <sstream>
 #include <iterator>
-#include <ctype.h>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <valarray>
+#include <vector>
 
 /**
- *  Class to hold data for a single student
+ * Class to hold data for a single student
  */
-class Student{
-    public:
-        std::string name;
-        std::string surname;
-        uint8_t age;
-
-    Student(std::string name, std::string surname, uint8_t age){
-        this->name = name;
-        this->surname = surname;
-        this->age = age;
-    }
+struct Student
+{
+    std::string name{};
+    std::string surname{};
+    std::uint8_t age{};
 };
 
-void executeCommands(std::vector<Student> &students);
-void printStudents(std::vector<Student> &students);
-bool isAlphabetic(const std::string &word);
-void validateName(const std::string &name, std::vector<std::string> &errors);
-void validateSurname(const std::string &name, std::vector<std::string> &errors);
-void validateAge(const std::string &name, std::vector<std::string> &errors);
-bool checkForErrors(const std::vector<std::string> &cmd);
+void executeCommands(std::vector<Student>& students);
+void printStudents(const std::vector<Student>& students);
+bool isAlphabetic(const std::string& word);
+void validateName(const std::string& name, std::vector<std::string>& errors);
+void validateSurname(const std::string& name, std::vector<std::string>& errors);
+void validateAge(const std::string& name, std::vector<std::string>& errors);
+bool checkForErrors(const std::vector<std::string>& cmd);
 
 /**
  *  Reads user input, checks for errors, and
  *  responds accordingly
  *  @param students std::vector<Student*>&
  */
-void executeCommands(std::vector<Student> &students){
-    while (true) {
-        std::string in;  // Declare and read input
+void executeCommands(std::vector<Student>& students)
+{
+    while (true)
+    {
+        std::string in{}; // Declare and read input
         getline(std::cin, in);
 
-        if(!in.size()) continue; // Do nothing if empty
-
-        std::istringstream iss(in);
-        std::vector<std::string> cmd((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
-
-        if(cmd[0].compare("new") == 0){
-            if(checkForErrors(cmd)) students.push_back(Student{cmd[1], cmd[2], static_cast<uint8_t>(std::stoi(cmd[3]))});
+        if (in.empty())
+        {
+            continue;
         }
-        else if(cmd[0].compare("list") == 0){
+
+        std::istringstream iss{in};
+        auto cmd = std::vector<std::string>(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+
+        if (cmd[0] == "new")
+        {
+            if (checkForErrors(cmd))
+            {
+                students.emplace_back(Student{cmd[1], cmd[2], static_cast<std::uint8_t>(std::stoi(cmd[3]))});
+            }
+        }
+        else if (cmd[0] == "list")
+        {
             printStudents(students);
         }
-        else if(cmd[0].compare("end") == 0){
+        else if (cmd[0] == "end")
+        {
             break;
         }
-        else {
+        else
+        {
             std::cout << "Unknown command\n";
         }
     }
@@ -64,8 +72,10 @@ void executeCommands(std::vector<Student> &students){
  *  command string for errors, returns true if no errors
  *  @param students std::vector<Student*>&
  */
-void printStudents(std::vector<Student> &students){
-    for (auto &s : students){
+void printStudents(const std::vector<Student>& students)
+{
+    for (const auto& s : students)
+    {
         std::cout << s.name << ", " << s.surname << ", " << std::to_string(s.age) << "\n";
     }
 }
@@ -75,9 +85,16 @@ void printStudents(std::vector<Student> &students){
  *  @param word std::string&
  *  @return bool
  */
-bool isAlphabetic(const std::string &word){
+bool isAlphabetic(const std::string& word)
+{
     bool alpha = true;
-    for(auto& c : word) if(!isalpha(c)) alpha = false;
+    for (auto& c : word)
+    {
+        if (!isalpha(c))
+        {
+            alpha = false;
+        }
+    }
     return alpha;
 }
 
@@ -85,19 +102,27 @@ bool isAlphabetic(const std::string &word){
  *  Checks that the given name is in the valid format
  *  and returns a vector of any errors that might occur
  *  @param name std::string&
- *  @param errors 
+ *  @param errors
  */
-void validateName(const std::string &name,
-                  std::vector<std::string> &errors){
-
+void validateName(const std::string& name, std::vector<std::string>& errors)
+{
     // Check if name is capitalized
-    if (!isupper(name[0])) errors.push_back("Name must be Capitalized");
+    if (!isupper(name[0]))
+    {
+        errors.push_back("Name must be Capitalized");
+    }
 
     // Check if name is longer than two letters
-    if (name.size() < 2) errors.push_back("Name too short");
+    if (name.size() < 2)
+    {
+        errors.push_back("Name too short");
+    }
 
     // Check if name only contains letters
-    if (!isAlphabetic(name)) errors.push_back("Name can only have letters");
+    if (!isAlphabetic(name))
+    {
+        errors.push_back("Name can only have letters");
+    }
 }
 
 /**
@@ -106,17 +131,25 @@ void validateName(const std::string &name,
  *  @param surname std::string&
  *  @param errors
  */
-void validateSurname(const std::string &surname,
-                     std::vector<std::string> &errors){
-    
+void validateSurname(const std::string& surname, std::vector<std::string>& errors)
+{
     // Check if surname is capitalized
-    if (!isupper(surname[0])) errors.push_back("Surname must be Capitalized");
+    if (!isupper(surname[0]))
+    {
+        errors.push_back("Surname must be Capitalized");
+    }
 
     // Check if surname is longer than two letters
-    if (surname.size() < 4) errors.push_back("Surname too short");
+    if (surname.size() < 4)
+    {
+        errors.push_back("Surname too short");
+    }
 
     // Check if surname only contains letters
-    if (!isAlphabetic(surname)) errors.push_back("Surname only letters allowed");
+    if (!isAlphabetic(surname))
+    {
+        errors.push_back("Surname only letters allowed");
+    }
 }
 
 /**
@@ -125,15 +158,25 @@ void validateSurname(const std::string &surname,
  *  @param age std::string&
  *  @return std::vector<std::string>
  */
-void validateAge(const std::string &age, std::vector<std::string> &errors){
+void validateAge(const std::string& age, std::vector<std::string>& errors)
+{
     int iage;
 
     // Check if parsing to int is possible
-    try { iage = std::stoi(age); }
-    catch (...) { errors.push_back("Age must be a number"); }
+    try
+    {
+        iage = std::stoi(age);
+    }
+    catch (...)
+    {
+        errors.push_back("Age must be a number");
+    }
 
     // Check if age is between 18 and 130
-    if (iage < 18 || iage > 130) errors.push_back("Age outside valid range");
+    if (iage < 18 || iage > 130)
+    {
+        errors.push_back("Age outside valid range");
+    }
 }
 
 /**
@@ -142,23 +185,31 @@ void validateAge(const std::string &age, std::vector<std::string> &errors){
  *  @param cmd std::vector<std::string>&
  *  @return bool
  */
-bool checkForErrors(const std::vector<std::string> &cmd){
+bool checkForErrors(const std::vector<std::string>& cmd)
+{
     std::vector<std::string> errors;
 
     // If the list of commands contains 4 elements:
-    if(cmd.size() == 4){
+    if (cmd.size() == 4)
+    {
         // Append any eventual errors from each error handler to errors vector
         validateName(cmd[1], errors);
         validateSurname(cmd[2], errors);
         validateAge(cmd[3], errors);
-    } else { // If there are not 4 elements in command string, append this error
+    }
+    else
+    { // If there are not 4 elements in command string, append this error
         errors.push_back("[3 arguments needed: Name Surname Age]");
     }
 
     // Print all accumulated errors, if any
-    if(!errors.empty()){
+    if (!errors.empty())
+    {
         std::cout << "[";
-        for (std::string error : errors) std::cout << error << (error == errors.back() ? "" : ", ");
+        for (const auto& error : errors)
+        {
+            std::cout << error << (error == errors.back() ? "" : ", ");
+        }
         std::cout << "]\n";
     }
 
@@ -169,7 +220,8 @@ bool checkForErrors(const std::vector<std::string> &cmd){
 /**
  *  Program entry point
  */
-int main(){
+int main()
+{
     std::vector<Student> students;
 
     executeCommands(students);
