@@ -153,12 +153,14 @@ int parse_command(char* cmd)
             fprintf(stderr, "\nERROR: Format: new First Surname Age[number])!\n");
             return PARSE_RUN;
         }
-        char* ptr;
+
+        char* ptr   = 0;
         student.age = (int)strtol(age_s, &ptr, 10);
         if (errno != 0)
         {
             student.age = -1; // let's use it as NOT_A_NUMBER error
         }
+
         unsigned err = validate_student(&student);
 
         if (err == VALID)
