@@ -1,11 +1,12 @@
 #include "stud_db.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /** Student database */
-struct StudentDatabase {
+struct StudentDatabase
+{
     struct Student* data;
     int initialized;
     int capacity;
@@ -17,20 +18,25 @@ static struct StudentDatabase* db = 0;
 
 void db_init(uint16_t initial_size)
 {
-    if (db == 0) {
-        db = malloc(sizeof(struct StudentDatabase));
-        db->data = calloc(initial_size, sizeof (struct Student));
+    if (db == 0)
+    {
+        db              = malloc(sizeof(struct StudentDatabase));
+        db->data        = calloc(initial_size, sizeof(struct Student));
         db->initialized = 1;
-        db->capacity = initial_size;
-        db->size = 0;
-    } else {
+        db->capacity    = initial_size;
+        db->size        = 0;
+    }
+    else
+    {
         fprintf(stderr, "Database is already initialized!");
     }
 }
 
-void db_grow_if_needed() {
-    /** Reallocate if full */
-    if (db->size == db->capacity) {
+/** Reallocate if full */
+void db_grow_if_needed()
+{
+    if (db->size == db->capacity)
+    {
         db->data = reallocarray(db->data, db->capacity * 2, sizeof(struct Student));
         db->capacity *= 2;
     }
@@ -52,7 +58,8 @@ void db_add(struct Student* student)
 void db_list()
 {
     printf("Students:\n");
-    for (int i = 0; i < db->size; ++i) {
+    for (int i = 0; i < db->size; ++i)
+    {
         struct Student* student = &db->data[i];
         printf("%s %s | Aged %d\n", student->name, student->surname, student->age);
     }
