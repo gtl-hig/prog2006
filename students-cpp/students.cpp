@@ -129,19 +129,19 @@ void validateSurname(const std::string& surname, std::vector<std::string>& error
     // Check if surname is capitalized
     if (!isupper(surname[0]))
     {
-        errors.push_back("Surname must be Capitalized");
+        errors.emplace_back("Surname must be Capitalized");
     }
 
     // Check if surname is longer than two letters
     if (surname.size() < 4)
     {
-        errors.push_back("Surname too short");
+        errors.emplace_back("Surname too short");
     }
 
     // Check if surname only contains letters
     if (!isEntirelyAlphabetic(surname))
     {
-        errors.push_back("Surname only letters allowed");
+        errors.emplace_back("Surname only letters allowed");
     }
 }
 
@@ -192,7 +192,7 @@ bool checkForErrors(const std::vector<std::string>& cmd)
     }
     else
     { // If there are not 4 elements in command string, append this error
-        errors.push_back("[3 arguments needed: Name Surname Age]");
+        errors.emplace_back("[3 arguments needed: Name Surname Age]");
     }
 
     // Print all accumulated errors, if any
