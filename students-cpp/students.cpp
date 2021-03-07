@@ -3,9 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include <valarray>
 #include <ctype.h>
-#include <memory>
 
 /**
  *  Class to hold data for a single student
@@ -23,8 +21,8 @@ class Student{
     }
 };
 
-void executeCommands(std::vector<std::shared_ptr<Student>> &students);
-void printStudents(std::vector<std::shared_ptr<Student>> &students);
+void executeCommands(std::vector<Student> &students);
+void printStudents(std::vector<Student> &students);
 bool isAlphabetic(const std::string &word);
 void validateName(const std::string &name, std::vector<std::string> &errors);
 void validateSurname(const std::string &name, std::vector<std::string> &errors);
@@ -36,10 +34,10 @@ bool checkForErrors(const std::vector<std::string> &cmd);
  *  responds accordingly
  *  @param students std::vector<Student*>&
  */
-void executeCommands(std::vector<std::shared_ptr<Student>> &students){
+void executeCommands(std::vector<Student> &students){
     while (true) {
         std::string in;  // Declare and read input
-        getline (std::cin, in);
+        getline(std::cin, in);
 
         if(!in.size()) continue; // Do nothing if empty
 
@@ -47,7 +45,7 @@ void executeCommands(std::vector<std::shared_ptr<Student>> &students){
         std::vector<std::string> cmd((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
 
         if(cmd[0].compare("new") == 0){
-            if(checkForErrors(cmd)) students.push_back(std::make_unique<Student>(cmd[1], cmd[2], std::stoi(cmd[3])));
+            if(checkForErrors(cmd)) students.push_back(Student{cmd[1], cmd[2], static_cast<uint8_t>(std::stoi(cmd[3]))});
         }
         else if(cmd[0].compare("list") == 0){
             printStudents(students);
@@ -66,9 +64,9 @@ void executeCommands(std::vector<std::shared_ptr<Student>> &students){
  *  command string for errors, returns true if no errors
  *  @param students std::vector<Student*>&
  */
-void printStudents(std::vector<std::shared_ptr<Student>> &students){
+void printStudents(std::vector<Student> &students){
     for (auto &s : students){
-        std::cout << s->name << ", " << s->surname << ", " << std::to_string(s->age) << "\n";
+        std::cout << s.name << ", " << s.surname << ", " << std::to_string(s.age) << "\n";
     }
 }
 
@@ -172,7 +170,7 @@ bool checkForErrors(const std::vector<std::string> &cmd){
  *  Program entry point
  */
 int main(){
-    std::vector<std::shared_ptr<Student>> students;
+    std::vector<Student> students;
 
     executeCommands(students);
     return 0;
