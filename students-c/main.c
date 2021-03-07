@@ -1,6 +1,7 @@
 #include "stud_db.h"
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,34 +34,35 @@ enum ERROR_FLAGS
     SURNAME_INVALID_LETTER  = 1U << 6U,
     AGE_LOW                 = 1U << 7U,
     AGE_HIGH                = 1U << 8U,
+    AGE_NOT_A_NUMBER        = 1U << 9U,
 };
 
 /** Error strings */
-const char* const ERROR_STRINGS[8] = {"Name is too short. ",
-                                      "Name is not capitalized. ",
-                                      "Name contains invalid letter, only [a-Z] allowed. ",
-                                      "Surname is too short. ",
-                                      "Surname is not capitalized. ",
-                                      "Surname contains invalid letter, only [a-Z] allowed. ",
-                                      "Age is below 18. ",
-                                      "Age is above 130. "};
+const char* const ERROR_STRINGS[] = {"Name is too short. ",
+                                     "Name is not capitalized. ",
+                                     "Name error: only [a-Z] allowed. ",
+                                     "Surname is too short. ",
+                                     "Surname is not capitalized. ",
+                                     "Surname error: only [a-Z] allowed. ",
+                                     "Age is below 18. ",
+                                     "Age is above 130. ",
+                                     "Age is not a number",
+                                     };
 
 /**
  * Validate a student by checking their data
  *
  * @return A bitflag of all error states, or VALID if no errors
  */
-unsigned validate_student(struct Student* student)
-{
+unsigned validate_student(struct Student* student) {
     unsigned err = 0U;
 
     /** Age */
-    if (student->age < MIN_AGE)
-    {
+    if (student->age == -1) {
+        err |= AGE_NOT_A_NUMBER;
+    } else if (student->age < MIN_AGE) {
         err |= AGE_LOW;
-    }
-    else if (student->age > MAX_AGE)
-    {
+    } else if (student->age > MAX_AGE) {
         err |= AGE_HIGH;
     }
 
@@ -119,6 +121,7 @@ void print_errors(unsigned err)
     if (err & SURNAME_INVALID_LETTER) { printf("%s", ERROR_STRINGS[5]); }
     if (err & AGE_LOW) { printf("%s", ERROR_STRINGS[6]); }
     if (err & AGE_HIGH) { printf("%s", ERROR_STRINGS[7]); }
+    if (err & AGE_NOT_A_NUMBER) { printf("%s", ERROR_STRINGS[8]); }
     printf("]\n");
 
     // clang-format on
@@ -137,12 +140,18 @@ int parse_command(char* cmd)
     else
     {
         struct Student student;
-        if (sscanf(cmd, "new %s %s %d", student.name, student.surname, &student.age) != 3)
+        char age_s[MAX_NAME_LENGTH];
+        if (sscanf(cmd, "new %s %s %s", student.name, student.surname, age_s) != 3)
         {
             fprintf(stderr, "\nERROR: Format: new First Surname Age[number])!\n");
             return PARSE_RUN;
         }
-
+        char *ptr;
+        student.age = (int)strtol(age_s, &ptr, 10);
+        if (errno != 0)
+        {
+            student.age = -1; // let's use it as NOT_A_NUMBER error
+        }
         unsigned err = validate_student(&student);
 
         if (err == VALID)
@@ -176,7 +185,7 @@ int read_and_execute_command()
 
 int main()
 {
-    db_init(2);
+    db_init(1000);
 
     while (1)
     {

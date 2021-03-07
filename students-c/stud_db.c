@@ -37,7 +37,7 @@ void db_grow_if_needed()
 {
     if (db->size == db->capacity)
     {
-        db->data = reallocarray(db->data, db->capacity * 2, sizeof(struct Student));
+        db->data = realloc(db->data, db->capacity * 2 * sizeof(struct Student));
         db->capacity *= 2;
     }
 }
