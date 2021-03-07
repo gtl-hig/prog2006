@@ -26,9 +26,9 @@ class Student{
 void executeCommands(std::vector<std::shared_ptr<Student>> &students);
 void printStudents(std::vector<std::shared_ptr<Student>> &students);
 bool isAlphabetic(const std::string &word);
-std::vector<std::string> validateName(const std::string &name);
-std::vector<std::string> validateSurname(const std::string &name);
-std::vector<std::string> validateAge(const std::string &name);
+void validateName(const std::string &name, std::vector<std::string> &errors);
+void validateSurname(const std::string &name, std::vector<std::string> &errors);
+void validateAge(const std::string &name, std::vector<std::string> &errors);
 bool checkForErrors(const std::vector<std::string> &cmd);
 
 /**
@@ -87,10 +87,10 @@ bool isAlphabetic(const std::string &word){
  *  Checks that the given name is in the valid format
  *  and returns a vector of any errors that might occur
  *  @param name std::string&
- *  @return std::vector<std::string>
+ *  @param errors 
  */
-std::vector<std::string> validateName(const std::string &name){
-    std::vector<std::string> errors;
+void validateName(const std::string &name,
+                  std::vector<std::string> &errors){
 
     // Check if name is capitalized
     if (!isupper(name[0])) errors.push_back("Name must be Capitalized");
@@ -100,19 +100,17 @@ std::vector<std::string> validateName(const std::string &name){
 
     // Check if name only contains letters
     if (!isAlphabetic(name)) errors.push_back("Name can only have letters");
-
-    return errors;
 }
 
 /**
  *  Checks that the given surname is in the valid format
  *  and returns a vector of any errors that might occur
  *  @param surname std::string&
- *  @return std::vector<std::string>
+ *  @param errors
  */
-std::vector<std::string> validateSurname(const std::string &surname){
-    std::vector<std::string> errors;
-
+void validateSurname(const std::string &surname,
+                     std::vector<std::string> &errors){
+    
     // Check if surname is capitalized
     if (!isupper(surname[0])) errors.push_back("Surname must be Capitalized");
 
@@ -121,8 +119,6 @@ std::vector<std::string> validateSurname(const std::string &surname){
 
     // Check if surname only contains letters
     if (!isAlphabetic(surname)) errors.push_back("Surname only letters allowed");
-
-    return errors;
 }
 
 /**
@@ -131,9 +127,7 @@ std::vector<std::string> validateSurname(const std::string &surname){
  *  @param age std::string&
  *  @return std::vector<std::string>
  */
-std::vector<std::string> validateAge(const std::string &age){
-    std::vector<std::string> errors;
-
+void validateAge(const std::string &age, std::vector<std::string> &errors){
     int iage;
 
     // Check if parsing to int is possible
@@ -142,8 +136,6 @@ std::vector<std::string> validateAge(const std::string &age){
 
     // Check if age is between 18 and 130
     if (iage < 18 || iage > 130) errors.push_back("Age outside valid range");
-
-    return errors;
 }
 
 /**
@@ -158,9 +150,9 @@ bool checkForErrors(const std::vector<std::string> &cmd){
     // If the list of commands contains 4 elements:
     if(cmd.size() == 4){
         // Append any eventual errors from each error handler to errors vector
-        for (std::string e : validateName(cmd[1])) errors.push_back(e);
-        for (std::string e : validateSurname(cmd[2])) errors.push_back(e);
-        for (std::string e : validateAge(cmd[3])) errors.push_back(e);
+        validateName(cmd[1], errors);
+        validateSurname(cmd[2], errors);
+        validateAge(cmd[3], errors);
     } else { // If there are not 4 elements in command string, append this error
         errors.push_back("[3 arguments needed: Name Surname Age]");
     }
