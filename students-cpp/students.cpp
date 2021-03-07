@@ -102,19 +102,19 @@ void validateName(const std::string& name, std::vector<std::string>& errors)
     // Check if name is capitalized
     if (!isupper(name[0]))
     {
-        errors.push_back("Name must be Capitalized");
+        errors.emplace_back("Name must be Capitalized");
     }
 
     // Check if name is longer than two letters
     if (name.size() < 2)
     {
-        errors.push_back("Name too short");
+        errors.emplace_back("Name too short");
     }
 
     // Check if name only contains letters
-    if (!isAlphabetic(name))
+    if (!isEntirelyAlphabetic(name))
     {
-        errors.push_back("Name can only have letters");
+        errors.emplace_back("Name can only have letters");
     }
 }
 
@@ -139,7 +139,7 @@ void validateSurname(const std::string& surname, std::vector<std::string>& error
     }
 
     // Check if surname only contains letters
-    if (!isAlphabetic(surname))
+    if (!isEntirelyAlphabetic(surname))
     {
         errors.push_back("Surname only letters allowed");
     }
