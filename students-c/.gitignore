@@ -1,3 +1,12 @@
 /build
 CMakeLists.txt.user
+CMakeCache.txt
+.idea/
+CMakeFiles/
+Makefile
+Testing/
+cmake_install.cmake
+students
+students-c
+students-c.cbp
 
