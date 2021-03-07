@@ -23,7 +23,7 @@ void printStudents(const std::vector<Student>& students);
 bool isEntirelyAlphabetic(const std::string& word);
 void validateName(const std::string& name, std::vector<std::string>& errors);
 void validateSurname(const std::string& name, std::vector<std::string>& errors);
-void validateAge(const std::string& name, std::vector<std::string>& errors);
+void validateAge(const std::string& age, std::vector<std::string>& errors);
 bool checkForErrors(const std::vector<std::string>& cmd);
 
 /**
