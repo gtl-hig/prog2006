@@ -39,10 +39,39 @@
   * cannot recover
 
 
+## Small/non-scientific performance test results
+
+| impl | time | factor |
+| --- | --- | --- |
+| C  | 3.95 | 1 |
+| go | 14.5 | 3.7 |
+| Node JS | 15.9 | 4.0 |
+| rust release | 17.2 | 4.4 |
+| python3 | 26.7 | 6.8 |
+| C++     | 26.8 | 6.8 |
+| Haskell | 29.1 | 7.4 |
+| python2 | 54.6 | 13.8 |
+| rust debug | 56.7 | 14.4 |
+| C++ with `shared_ptr` | 120 | 32 |
+| C++ with `shared_ptr` and functions returning vectors | 220 | 60 |
+
+## Compiler options
+
+* C++
+   * /usr/local/bin/g++-10 -std=gnu++14 -o students -Ofast -pedantic -Wall -Wextra -fomit-frame-pointer -march=native -flto students.cpp
+* C
+   * /usr/local/bin/gcc-10 -std=c11 -o students -Ofast -Wall -pedantic -fomit-frame-pointer -march=native  main.c stud_db.c
+* Go
+   * go build -ldflags "-s -w" .
+
 
 
 ## Concluding remarks
 
+* Think in Abstract (using tools/concepts from your abstractions toolbox)
+* Then code the Abstract solution in a given language.
+* Do not think in a LANGUAGE. Use the language as a tool.
+* Algorithm always beats "hand-based optimisations/language choice"
+* Always measure! Never assume you know the answer.
 
-Think in Abstract (using tools/concepts from your abstractions toolbox)
-Then code it in a given language
+
