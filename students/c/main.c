@@ -38,31 +38,38 @@ enum ERROR_FLAGS
 };
 
 /** Error strings */
-const char* const ERROR_STRINGS[] = {"Name is too short. ",
-                                     "Name is not capitalized. ",
-                                     "Name error: only [a-Z] allowed. ",
-                                     "Surname is too short. ",
-                                     "Surname is not capitalized. ",
-                                     "Surname error: only [a-Z] allowed. ",
-                                     "Age is below 18. ",
-                                     "Age is above 130. ",
-                                     "Age is not a number",
-                                     };
+const char* const ERROR_STRINGS[] = {
+    "Name is too short. ",
+    "Name is not capitalized. ",
+    "Name error: only [a-Z] allowed. ",
+    "Surname is too short. ",
+    "Surname is not capitalized. ",
+    "Surname error: only [a-Z] allowed. ",
+    "Age is below 18. ",
+    "Age is above 130. ",
+    "Age is not a number. ",
+};
 
 /**
  * Validate a student by checking their data
  *
  * @return A bitflag of all error states, or VALID if no errors
  */
-unsigned validate_student(struct Student* student) {
+unsigned validate_student(struct Student* student)
+{
     unsigned err = 0U;
 
     /** Age */
-    if (student->age == -1) {
+    if (student->age == -1)
+    {
         err |= AGE_NOT_A_NUMBER;
-    } else if (student->age < MIN_AGE) {
+    }
+    else if (student->age < MIN_AGE)
+    {
         err |= AGE_LOW;
-    } else if (student->age > MAX_AGE) {
+    }
+    else if (student->age > MAX_AGE)
+    {
         err |= AGE_HIGH;
     }
 
@@ -146,12 +153,14 @@ int parse_command(char* cmd)
             fprintf(stderr, "\nERROR: Format: new First Surname Age[number])!\n");
             return PARSE_RUN;
         }
-        char *ptr;
+
+        char* ptr   = 0;
         student.age = (int)strtol(age_s, &ptr, 10);
         if (errno != 0)
         {
             student.age = -1; // let's use it as NOT_A_NUMBER error
         }
+
         unsigned err = validate_student(&student);
 
         if (err == VALID)

@@ -12,11 +12,9 @@
    * `hello-chuck-rust` - Rust
 * `lecture-three` - simple arithmethic calculator, code for [the online lecture](https://www.youtube.com/watch?v=FehRZbQW8Eg)
 * `students` - applicative error validation, error bubbling up and error consolidation
-   * `students-go` - Go implementation
-   * `students-rust`- Rust implementation (courtesy of Dennis)
-   * `students-haskell` - Haskell implementation
-   * `students-gen-rust` - data generator for testing students implementations
+   * `language` - check the corresponding language subfolder for an implementation in that language
+   * `generator-rust` - data generator for testing students implementations
 * `zmq-demo` - simple Publish-Subscribe skeleton app using zmq in Haskell
 * `zmq-go` - same as `zmq-demo`, but this time in Go
-* `rust` - All rust examples and code
+* `rust` - All rust examples and code from lectures
    * `ownership` - code for the [ownership lecture](https://www.youtube.com/watch?v=mcCijWFIgaU)
