@@ -12,7 +12,6 @@
 * Age
    * must be a natural number, between 18 and 130
 
-
 # Objectives
 
 * a simple demo for error handling
@@ -40,9 +39,35 @@
 
 
 
+## Small/non-scientific performance test results
+
+| impl | time | factor |
+| --- | --- | --- |
+| **C**  | 3.95 | **1** |
+| **go** | 14.5 | **3.7** |
+| rust release | 17.2 | 4.4 |
+| python3 | 26.7 | 6.8 |
+| C++     | 26.8 | 6.8 |
+| **Haskell** | 29.1 | **7.4** |
+| python  | 54.6 | 13.8 |
+| rust debug | 56.7 | 14.4 |
+
+
+## Compiler options
+
+* C++
+   * `/usr/local/bin/g++-10 -std=gnu++14 -o students -Ofast -pedantic -Wall -Wextra -fomit-frame-pointer -march=native -flto students.cpp`
+* C
+   * `/usr/local/bin/gcc-10 -std=c11 -o students -Ofast -Wall -pedantic -fomit-frame-pointer -march=native  main.c stud_db.c`
+* Go
+   * `go build -ldflags "-s -w" .`
+
+
 
 ## Concluding remarks
 
 
-Think in Abstract (using tools/concepts from your abstractions toolbox)
-Then code it in a given language
+* Think in Abstract (using tools/concepts from your abstractions toolbox)
+* Then code it in a given language
+* Most of the time, algorithm beats optimisations
+
