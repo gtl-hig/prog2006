@@ -24,15 +24,16 @@ class Students {
 // validating and creating student
 const newStudent = (input) => {
     let errorMessages = []
-    firstname = input[1]
-    surname = input[2]
-    age = input[3]
 
     // validate format
     if (input.length !== 4) {
-        console.error("Should provide 3 arguments: Name Surname Age");
-        return;
+        errorMessages.push("Should provide 3 arguments: Name Surname Age");
+        return errorMessages;
     }
+
+    firstname = input[1]
+    surname = input[2]
+    age = input[3]
 
     // validate firstname
     if (firstname.length < 2) {
@@ -52,7 +53,7 @@ const newStudent = (input) => {
     if (surname.charAt(0) !== surname.charAt(0).toUpperCase()) {
         errorMessages.push("Surname must have first character Capitalized")
     }
-    if (/[^a-zA-Z]/.test(firstname)) {
+    if (/[^a-zA-Z]/.test(surname)) {
         errorMessages.push("Surname can only have letters")
     }
 
@@ -71,7 +72,7 @@ const newStudent = (input) => {
                 finalMessage += ", "
             }
         })
-        console.error(finalMessage);
+        process.stdout.write(finalMessage+"\n");
     } else { // if no errors
         students.addStudent(firstname, surname, age);
     }
@@ -81,22 +82,37 @@ const newStudent = (input) => {
 const showAllStudents = () => {
     const allStudents = students.getAllStudents();
     allStudents.forEach((student, idx) => {
-        console.log(`firstname: ${student.firstname}, surname: ${student.surname}, age: ${student.age}`)
+        process.stdout.write(`${student.firstname}, ${student.surname}, ${student.age}\n`)
     })
 }
 
 // main
-const stdin = process.openStdin();
+process.stdin.resume();
+process.stdin.setEncoding('ascii');
+
 students = new Students();
-stdin.addListener("data", (d) => {
+var readline = require('readline');
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function(d){
     const input = d.toString().trim().split(" ");
     if (input[0] === "new") {
         newStudent(input);
     } else if (input[0] === "list") {
         showAllStudents();
     } else if (input[0] === "end") {
-        process.exit(1)
+        // TODO because of async write, the command below
+        // quits the program BEFORE it finishes printing
+        // process.exit(1)
     } else {
-        console.log("unknown command")
+        process.stdout.write("unknown command\n")
     }
 });
+
+// TODO: think of a better solution for the timing
+// this is just a hack to approx. the actual time
+// setTimeout(function(){process.exit(1);}, 15900);
