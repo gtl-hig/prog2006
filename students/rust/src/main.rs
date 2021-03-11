@@ -25,13 +25,13 @@ impl Display for Student {
 
 #[derive(Debug)]
 struct Slice<'a, T> {
-    data: &'a[T]
+    data: &'a [T],
 }
 
-impl <T: Display> Display for Slice<'_, T> {
+impl<T: Display> Display for Slice<'_, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for s in self.data {
-            write!(f, "{}\n", s)?;
+            writeln!(f, "{}", s)?;
         }
         Ok(())
     }
@@ -50,7 +50,6 @@ impl Display for &[Student] {
     }
 }
 */
-
 
 fn pure<E>(e: E) -> Vec<E> {
     let mut res = Vec::new();
@@ -77,11 +76,9 @@ fn combine_results<A, B, E>(r1: Result<A, Vec<E>>, r2: Result<B, Vec<E>>) -> Res
 
 impl Student {
     pub fn new(name: &str, surname: &str, age_s: &str) -> Result<Self, Vec<StudentError>> {
-
         let age = combine_results(
-            combine_results(
-                is_valid_name(name),is_valid_surname(surname)),
-            is_valid_age(age_s)
+            combine_results(is_valid_name(name), is_valid_surname(surname)),
+            is_valid_age(age_s),
         )?;
 
         Ok(Self {
@@ -112,9 +109,6 @@ impl StudentDB {
     }
 }
 
-
-
-
 fn is_only_letters(s: &str) -> bool {
     s.chars().all(|c| c.is_alphabetic())
 }
@@ -130,7 +124,7 @@ fn is_valid_name(name: &str) -> Result<(), Vec<StudentError>> {
     if !is_only_letters(name) {
         errs.push(StudentError::OnlyLettersAllowed("Name"));
     }
-    if errs.len() > 0 {
+    if !errs.is_empty() {
         Err(errs)
     } else {
         Ok(())
@@ -149,16 +143,18 @@ fn is_valid_surname(surname: &str) -> Result<(), Vec<StudentError>> {
         errs.push(StudentError::OnlyLettersAllowed("Surname"));
     }
 
-    if errs.len() > 0 {
-        return Err(errs)
+    if !errs.is_empty() {
+        Err(errs)
     } else {
         Ok(())
     }
 }
 
 fn is_valid_age(age_s: &str) -> Result<i32, Vec<StudentError>> {
-    let age = age_s.parse::<i32>().map_err(|_| pure(StudentError::AgeNotANumber))?;
-    if age < 18 || age > 130 {
+    let age = age_s
+        .parse::<i32>()
+        .map_err(|_| pure(StudentError::AgeNotANumber))?;
+    if !(18..=130).contains(&age) {
         Err(pure(StudentError::AgeOutOfRange))
     } else {
         Ok(age)
@@ -171,9 +167,7 @@ fn parse_student_info<'a>(
 ) -> Result<Student, Vec<StudentError>> {
     let name = words.next().ok_or(pure(StudentError::MissingField))?;
     let surname = words.next().ok_or(pure(StudentError::MissingField))?;
-    let age = words
-        .next()
-        .ok_or(pure(StudentError::MissingField))?;
+    let age = words.next().ok_or(pure(StudentError::MissingField))?;
 
     Student::new(name, surname, age)
 }
@@ -208,8 +202,8 @@ fn exec_commands(db: &mut StudentDB) {
             "end" => break,
             _ => {
                 println!("Unknown command");
-                continue
-            },
+                continue;
+            }
         }
         input.clear();
     }
