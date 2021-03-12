@@ -1,6 +1,20 @@
 -- | Module that contains our tasks. Keeping it PURE.
 module Tasks(doubleNum,
+             dummyBool,
              convertWordsIntoInts) where
+
+
+-- | Testing Jorgen Bool case.
+--
+-- >>> dummyBool []
+-- False
+-- 
+-- >>> dummyBool [1]
+-- True
+dummyBool :: [a] -> Bool 
+dummyBool l 
+   | null l    = False
+   | otherwise = True
 
 -- | Doubles the given number.
 --

@@ -14,7 +14,7 @@ module Lib
   -- Examples
   -- 
   -- >>> helloWorld
-  -- "Hello World"
+  -- Hello World
   --
   helloWorld :: IO ()
   helloWorld = putStrLn "Hello World"
