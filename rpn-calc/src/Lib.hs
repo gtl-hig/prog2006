@@ -1,10 +1,11 @@
 module Lib
     ( processLine
     , processTokens
+    , fib, fibF, fibN, fibFn
     ) where
 
 import Text.Read (readMaybe)
-import Control.Monad.State.Lazy (State, get, put, evalState)
+import Control.Monad.State.Lazy (State, get, put, evalState, replicateM, StateT, lift, liftIO)
 
 
 
@@ -78,7 +79,45 @@ opNum token = do
                         Just n -> Right n : stack
     put (ignore, new_stack)
     return new_stack
+    
+    
+    
+    
+-- ====================
+-- Extras
 
+-- | Infinite fibonacci sequence
+-- 
+-- >>> fibF !! 3
+-- 2
+-- 
+-- >>> fibF !! 10
+-- 55
+-- 
+-- >>> take 6 fibF
+-- [0,1,1,2,3,5]
+-- 
+fibF :: (Num a) => [a]
+fibF = 0 : rest where 
+  rest = 1 : zipWith (+) fibF rest
 
+-- | Returns nth element of the fibonacci sequence
+fibFn :: (Num a) => Int -> a
+fibFn num = fibF !! num  
 
-
+-- | Alternative implementation of fibonacci computation
+-- (0, 1) -- (1,1) -- (1,2)  -- (2,3)  -- (3,5)
+fib :: StateT (Integer, Integer) IO Integer
+fib = do
+  (a, b) <- get
+  put (b, a + b)
+  lift $ print (a + b)
+  return (a + b)
+  
+-- | Returns nth element of the fibonacci sequence
+fibN :: Int -> StateT (Integer, Integer) IO Integer
+fibN num = do
+  _ <- replicateM (num-1) fib
+  (_, b) <- get
+  return b
+  

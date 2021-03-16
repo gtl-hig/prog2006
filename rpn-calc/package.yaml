@@ -50,4 +50,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - rpn-calc
+    - doctest
 
