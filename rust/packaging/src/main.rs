@@ -1,9 +1,21 @@
-use packaging::{compute_fare, taxi, fare};
+use taxi_ride::{taxi, DrivingStyle, FareParameters};
 
 fn main() {
-    println!("Jail Taxi costs: NOK {}", compute_fare(32.5, 5.4, packaging::SpeedLevel::Jail));
-    println!("The taxi costs: NOK {}", taxi::compute_fare(12.5, 34.5));
-    println!("The other taxi costs: NOK {}", fare::compute_fare(34.5, 12.5));
+    println!("The Taxi costs: NOK {}", taxi::compute_fare(35.4, 11.2));
+    // println!("The other Taxi costs: NOK {:.2}", fare::compute_fare(11.2, 30.4));
 
-    fare::trips::save_trip(32.0, "Jenny");
+    let mut fare_parameters = FareParameters::new(12.0, 36.2, DrivingStyle::Slow);
+
+    println!(
+        "The slow Taxi costs: NOK {:.2}",
+        taxi_ride::compute_fare(&mut fare_parameters)
+    );
+    println!(
+        "The slow Taxi costs: NOK {:.2}",
+        taxi_ride::compute_fare(&mut fare_parameters)
+    );
+    println!(
+        "The slow Taxi costs: NOK {:.2}",
+        taxi_ride::compute_fare(&mut fare_parameters)
+    );
 }

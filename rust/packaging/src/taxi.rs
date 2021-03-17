@@ -1,5 +1,4 @@
-
-/// Compute the taxi fare
-pub fn compute_fare(dist: f32, rate: f32) -> f32 {
-    dist * rate + 100.0
+/// Compute fare for taxi ride
+pub fn compute_fare(rate: f32, distance: f32) -> f32 {
+    rate * distance + 100.0
 }

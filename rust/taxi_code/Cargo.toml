@@ -1,7 +1,7 @@
 [package]
-name = "taxi_ride"
+name = "taxi_code"
 version = "0.1.0"
-authors = ["Carl Findahl <carlhf@stud.ntnu.no>"]
+authors = ["Carl Findahl <sportleroro@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

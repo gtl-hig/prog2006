@@ -1,5 +1,6 @@
 pub mod trips;
 
-pub fn compute_fare(rate: f32, distance: f32) -> f32 {
-    rate * distance + 50.0
+/// Compute fare for taxi ride
+pub fn compute_fare(distance: f32, rate: f32) -> f32 {
+    distance * rate + 50.0
 }

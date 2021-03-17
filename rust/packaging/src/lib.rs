@@ -1,33 +1,58 @@
-pub mod fare;
+mod fare;
 pub mod taxi;
 
-/// Speed level for taxi trip
-pub enum SpeedLevel {
+#[derive(Copy, Clone)]
+pub enum DrivingStyle {
     Slow,
     Limit,
-    Fine,
-    Jail
+    Fast,
+    Jail,
 }
 
-pub fn compute_fare(rate: f32, dist: f32, speed_level: SpeedLevel) -> f32 {
-    (rate * dist + 25.0) * detail::speed_to_price(speed_level)
+pub struct FareParameters {
+    dist: f32,
+    rate: f32,
+    style: DrivingStyle,
 }
 
-fn print_log(msg: &str) {
+impl FareParameters {
+    pub fn new(dist: f32, rate: f32, style: DrivingStyle) -> Self {
+        FareParameters { dist, rate, style }
+    }
+}
+
+pub fn compute_fare(params: &mut FareParameters) -> f32 {
+    let base = fare::compute_fare(params.dist, params.rate);
+
+    // Public in the module
+    params.rate += 1.0;
+
+    base * detail::map_style_to_price_multiplier(params.style)
+}
+
+fn log_message(msg: &str) {
     println!("LOG: {}", msg);
 }
 
 mod detail {
-    use crate::{SpeedLevel, print_log};
+    use super::DrivingStyle;
+    use crate::log_message;
 
-    pub fn speed_to_price(speed_level: SpeedLevel) -> f32 {
-        print_log("Get fucked and die.");
+    pub fn map_style_to_price_multiplier(style: DrivingStyle) -> f32 {
+        super_detail::print_me();
+        log_message("I steal from parent");
 
-        match speed_level {
-            SpeedLevel::Slow => 0.7,
-            SpeedLevel::Limit => 1.0,
-            SpeedLevel::Fine => 1.5,
-            SpeedLevel::Jail => 4.0,
+        match style {
+            DrivingStyle::Slow => 0.5,
+            DrivingStyle::Limit => 1.0,
+            DrivingStyle::Fast => 1.33,
+            DrivingStyle::Jail => 3.9,
+        }
+    }
+
+    mod super_detail {
+        pub fn print_me() {
+            super::super::log_message("SUPER. DETAIL.");
         }
     }
 }
