@@ -12,6 +12,7 @@ fn panic_fail() -> i32 {
     }
 }
 
+
 fn result_fail() -> Result<i32> {
     let mut rng = rand::thread_rng();
     let x = rng.gen_range(0..10);
@@ -38,6 +39,5 @@ fn repeat_until_success() {
 fn main() {
     let num = panic_fail();
     println!("We first got {}", num);
-
     repeat_until_success();
 }

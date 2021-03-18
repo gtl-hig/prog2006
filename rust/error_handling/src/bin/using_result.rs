@@ -1,8 +1,8 @@
 use std::fs::File;
-use std::io::{ErrorKind, Read};
+use std::io::{ErrorKind, Read, Error};
 
 fn read_some_file() -> Result<String, std::io::Error> {
-    let mut f = match File::open("Cargo.toml") {
+    let mut f = match File::open("/home/carl/invalid.txt") {
         Ok(file) => file,
         Err(err) => return Err(err),
     };
@@ -23,10 +23,27 @@ fn read_some_file() -> Result<String, std::io::Error> {
 fn main() -> Result<(), std::io::Error> {
     let txt = read_some_file();
 
-    if let Ok(data) = txt {
-        println!("The file contains:\n{}", data);
-        Ok(())
-    } else {
-        Err(txt.err().unwrap())
-    }
+    match txt {
+        Ok(x) => {}
+        Err(error) => {
+            match error.kind() {
+                ErrorKind::NotFound => {
+                    println!("The file does not exist, try creating it or check for typos.");
+                }
+                ErrorKind::PermissionDenied => {
+                    println!("You don't have access to this!")
+                }
+                _ => {}
+            }
+        }
+    };
+
+    Ok(())
+
+    // if let Ok(data) = txt {
+    //     println!("The file contains:\n{}", data);
+    //     Ok(())
+    // } else {
+    //     Err(txt.err().unwrap())
+    // }
 }

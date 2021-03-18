@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Context, Result};
 use std::ops::RangeInclusive;
 use thiserror::Error;
+use rand::Rng;
 
 #[derive(Error, Debug)]
 enum IntRangeError {
@@ -9,6 +10,8 @@ enum IntRangeError {
         input: i32,
         range: RangeInclusive<i32>,
     },
+    #[error("It just failed, that's it")]
+    ItJustFailed
 }
 
 /// Read an integer in the given inclusive range
@@ -25,6 +28,11 @@ fn read_int_in_range(range: RangeInclusive<i32>) -> Result<i32> {
         .parse()
         .context("Parsing the user input number")?;
 
+    let mut rng = rand::thread_rng();
+    if rng.gen_range(0..100) > 50 {
+        return Err(anyhow!(IntRangeError::ItJustFailed));
+    }
+
     if range.contains(&number) {
         Ok(number)
     } else {
@@ -36,8 +44,23 @@ fn read_int_in_range(range: RangeInclusive<i32>) -> Result<i32> {
 }
 
 fn main() -> Result<()> {
-    let birth_year = read_int_in_range(1900..=2021)?;
-    println!("Birth year: {}", birth_year);
+
+    let birth_year = read_int_in_range(1900..=2021);
+
+    match birth_year {
+        Ok(year) => { println!("Birth year: {}", year); }
+        Err(error) => {
+            match error.downcast_ref::<IntRangeError>().unwrap() {
+                IntRangeError::OutOfRange { input, range } => {
+                    eprintln!("The out of range is caused by your input being invalid.");
+                    eprintln!("{:?}", error);
+                }
+                IntRangeError::ItJustFailed => {
+                    eprintln!("Well, that is not fun!");
+                }
+            }
+        }
+    }
 
     Ok(())
 }
