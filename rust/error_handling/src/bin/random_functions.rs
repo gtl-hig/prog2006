@@ -1,4 +1,4 @@
-use anyhow::{Result, anyhow, Context};
+use anyhow::{anyhow, Context, Result};
 use rand::Rng;
 
 fn panic_fail() -> i32 {
@@ -19,7 +19,7 @@ fn result_fail() -> Result<i32> {
     if x > 5 {
         Ok(x)
     } else {
-        Err(anyhow!("Number out of range!"))
+        Err(anyhow!("Number out of range!").context("Invalid input."))
     }
 }
 
@@ -29,8 +29,8 @@ fn repeat_until_success() {
             Ok(n) => {
                 println!("We got {}", n);
                 break;
-            },
-            Err(err) => eprintln!("Retrying due to {}", err)
+            }
+            Err(err) => eprintln!("Retrying due to Error: {:?}", err),
         }
     }
 }
