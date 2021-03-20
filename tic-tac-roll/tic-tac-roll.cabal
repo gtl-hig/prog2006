@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.3.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tic-tac-roll
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/tic-tac-roll#readme>
+homepage:       https://github.com/githubuser/tic-tac-roll#readme
+bug-reports:    https://github.com/githubuser/tic-tac-roll/issues
+author:         Mariusz Nowostawski
+maintainer:     mariusz.nowostawski@ntnu.no
+copyright:      2021 Mariusz Nowostawski (NTNU)
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/tic-tac-roll
+
+library
+  exposed-modules:
+      AI
+      Board
+      Game
+      GameIO
+  other-modules:
+      Paths_tic_tac_roll
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , mtl
+    , optparse-applicative
+    , random
+  default-language: Haskell2010
+
+executable tic-tac-roll-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_tic_tac_roll
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , mtl
+    , optparse-applicative
+    , random
+    , tic-tac-roll
+  default-language: Haskell2010
+
+test-suite tic-tac-roll-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_tic_tac_roll
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , doctest
+    , mtl
+    , optparse-applicative
+    , random
+    , tic-tac-roll
+  default-language: Haskell2010
